@@ -1,3 +1,9 @@
+---
+description: Enterprise-Grade Front-End Development Guidelines for React, NextJS, TypeScript, and TailwindCSS
+globs: ["**/*.tsx", "**/*.ts", "**/*.jsx", "**/*.js"]
+alwaysApply: true
+---
+
 # 🚀 Enterprise Front-End Development Guidelines
 
 ## 🎯 Role & Expertise
@@ -42,6 +48,7 @@ You provide **thoughtful, nuanced answers** and are **brilliant at reasoning**. 
 - **Redux Toolkit** - Complex state management
 - **React Query/TanStack Query** - Server state & caching
 - **Zod** - Runtime validation & type inference
+- **Axios** - HTTP client for API integration
 - **Jest** - Testing framework
 - **React Testing Library** - Component testing
 
