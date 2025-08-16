@@ -95,19 +95,22 @@ export class ApiError extends Error {
 }
 
 // API error handler
-export const handleApiError = (error: any): never => {
-  if (error.response) {
+export const handleApiError = (error: unknown): never => {
+  // Type guard for axios errors
+  if (error && typeof error === 'object' && 'response' in error) {
+    const axiosError = error as { response?: { data?: { message?: string; code?: string }; status: number } }
     // Server responded with error status
     throw new ApiError(
-      error.response.data?.message || 'An error occurred',
-      error.response.status,
-      error.response.data?.code
+      axiosError.response?.data?.message || 'An error occurred',
+      axiosError.response?.status || 0,
+      axiosError.response?.data?.code
     )
-  } else if (error.request) {
+  } else if (error && typeof error === 'object' && 'request' in error) {
     // Request was made but no response received
     throw new ApiError('Network error - no response received', 0)
   } else {
     // Something else happened
-    throw new ApiError(error.message || 'An unexpected error occurred', 0)
+    const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred'
+    throw new ApiError(errorMessage, 0)
   }
 }

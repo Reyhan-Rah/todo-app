@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
+import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse, AxiosRequestConfig } from 'axios'
 
 // Create axios instance with default configuration
 const apiClient: AxiosInstance = axios.create({
@@ -11,14 +11,11 @@ const apiClient: AxiosInstance = axios.create({
 
 // Request interceptor for adding auth tokens
 apiClient.interceptors.request.use(
-  (config: AxiosRequestConfig) => {
+  (config: InternalAxiosRequestConfig) => {
     // Add auth token if available
     const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null
     if (token) {
-      config.headers = {
-        ...config.headers,
-        Authorization: `Bearer ${token}`,
-      }
+      config.headers.set('Authorization', `Bearer ${token}`)
     }
     return config
   },
@@ -58,12 +55,12 @@ export const apiService = {
   },
   
   // POST request
-  post: <T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> => {
+  post: <T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> => {
     return apiClient.post(url, data, config).then((response) => response.data)
   },
   
   // PUT request
-  put: <T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> => {
+  put: <T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> => {
     return apiClient.put(url, data, config).then((response) => response.data)
   },
   
@@ -73,7 +70,7 @@ export const apiService = {
   },
   
   // PATCH request
-  patch: <T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> => {
+  patch: <T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> => {
     return apiClient.patch(url, data, config).then((response) => response.data)
   },
 }
