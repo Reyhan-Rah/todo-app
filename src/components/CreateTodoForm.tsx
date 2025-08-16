@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { useCreateTodo } from '@/hooks/useTodos'
+import { useAppDispatch, useAppSelector } from '@/store/hooks'
+import { createTodo } from '@/store/todosSlice'
 import { CreateTodoSchema } from '@/services/api'
 import { cn } from '@/lib/utils'
 
@@ -7,7 +8,8 @@ const CreateTodoForm = () => {
   const [newTodoText, setNewTodoText] = useState('')
   const [validationError, setValidationError] = useState<string>('')
   
-  const createTodoMutation = useCreateTodo()
+  const dispatch = useAppDispatch()
+  const { loading: isCreating } = useAppSelector(state => state.todos)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -21,16 +23,15 @@ const CreateTodoForm = () => {
         userId: 1,
       })
 
-      createTodoMutation.mutate(validatedData, {
-        onSuccess: () => {
+      dispatch(createTodo(validatedData)).then((result) => {
+        if (createTodo.fulfilled.match(result)) {
           setNewTodoText('')
           setValidationError('')
-        },
-        onError: (error) => {
-          setValidationError(error.message || 'Failed to create todo')
-        },
+        } else if (createTodo.rejected.match(result)) {
+          setValidationError(result.error.message || 'Failed to create todo')
+        }
       })
-    } catch (error) {
+    } catch (error: unknown) {
       if (error instanceof Error) {
         setValidationError(error.message)
       }
@@ -62,23 +63,23 @@ const CreateTodoForm = () => {
                 ? "border-red-300 focus:ring-red-500 focus:border-red-500"
                 : "border-gray-300 focus:ring-blue-500 focus:border-blue-500"
             )}
-            disabled={createTodoMutation.isPending}
+            disabled={isCreating}
             aria-describedby={validationError ? "todo-error" : undefined}
             aria-invalid={!!validationError}
           />
           <button
             type="submit"
-            disabled={createTodoMutation.isPending || !isFormValid}
+            disabled={isCreating || !isFormValid}
             className={cn(
               "px-6 py-2 text-white rounded-lg transition-colors",
               "focus:outline-none focus:ring-2 focus:ring-offset-2",
               isFormValid
                 ? "bg-blue-500 hover:bg-blue-600 focus:ring-blue-500"
                 : "bg-gray-400 cursor-not-allowed",
-              createTodoMutation.isPending && "opacity-75 cursor-not-allowed"
+              isCreating && "opacity-75 cursor-not-allowed"
             )}
           >
-            {createTodoMutation.isPending ? 'Adding...' : 'Add Todo'}
+            {isCreating ? 'Adding...' : 'Add Todo'}
           </button>
         </div>
         

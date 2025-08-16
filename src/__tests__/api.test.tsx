@@ -1,15 +1,27 @@
 import React from 'react'
-import { renderHook, waitFor } from '@testing-library/react'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { useTodos, useCreateTodo } from '../hooks/useTodos'
-import { todoApi } from '../services/api'
-import { Todo } from '../services/api'
+import { render, screen, waitFor } from '@testing-library/react'
+import { Provider } from 'react-redux'
+import { configureStore } from '@reduxjs/toolkit'
+import todosReducer from '../store/todosSlice'
+import TodoList from '../components/TodoList'
+
+// Create a test store
+const createTestStore = () => {
+  return configureStore({
+    reducer: {
+      todos: todosReducer,
+    },
+  })
+}
 
 // Mock the API service
 jest.mock('@/services/api', () => ({
   todoApi: {
     getAll: jest.fn(),
     create: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+    toggle: jest.fn(),
   },
 }))
 
@@ -18,116 +30,71 @@ jest.mock('@/lib/axios', () => ({
   apiService: {
     get: jest.fn(),
     post: jest.fn(),
+    put: jest.fn(),
+    delete: jest.fn(),
+    patch: jest.fn(),
   },
 }))
 
-// Create a wrapper for React Query
-const createWrapper = () => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-      },
-    },
-  })
-  
-  return function Wrapper({ children }: { children: React.ReactNode }) {
-    return (
-      <QueryClientProvider client={queryClient}>
-        {children}
-      </QueryClientProvider>
-    )
-  }
-}
+describe('Todo App with Redux', () => {
+  let store: ReturnType<typeof createTestStore>
 
-describe('Todo API Integration', () => {
   beforeEach(() => {
+    store = createTestStore()
     jest.clearAllMocks()
   })
 
-  describe('useTodos', () => {
-    it('should fetch todos successfully', async () => {
-      const mockTodos: Todo[] = [
+  const renderWithProvider = (component: React.ReactElement) => {
+    return render(
+      <Provider store={store}>
+        {component}
+      </Provider>
+    )
+  }
+
+  describe('Todo List Rendering', () => {
+    it('should render loading state initially', () => {
+      renderWithProvider(<TodoList />)
+      // Check for loading skeleton elements
+      expect(screen.getAllByTestId('loading-skeleton')).toHaveLength(5)
+    })
+
+    it('should render todo list when todos are loaded', async () => {
+      const mockTodos = [
         {
           id: 1,
-          todo: 'Test Todo',
+          todo: 'Test Todo 1',
           completed: false,
+          userId: 1,
+        },
+        {
+          id: 2,
+          todo: 'Test Todo 2',
+          completed: true,
           userId: 1,
         },
       ]
 
-      ;(todoApi.getAll as jest.Mock).mockResolvedValue(mockTodos)
+      // Mock the API response
+      const { todoApi } = jest.requireMock('@/services/api')
+      todoApi.getAll.mockResolvedValue(mockTodos)
 
-      const { result } = renderHook(() => useTodos(), {
-        wrapper: createWrapper(),
-      })
+      renderWithProvider(<TodoList />)
 
+      // Wait for todos to load
       await waitFor(() => {
-        expect(result.current.isSuccess).toBe(true)
+        expect(screen.getByText('Test Todo 1')).toBeInTheDocument()
+        expect(screen.getByText('Test Todo 2')).toBeInTheDocument()
       })
-
-      expect(result.current.data).toEqual(mockTodos)
-      expect(todoApi.getAll).toHaveBeenCalledTimes(1)
-    })
-
-    it('should handle error when fetching todos fails', async () => {
-      const error = new Error('Failed to fetch todos')
-      ;(todoApi.getAll as jest.Mock).mockRejectedValue(error)
-
-      const { result } = renderHook(() => useTodos(), {
-        wrapper: createWrapper(),
-      })
-
-      await waitFor(() => {
-        expect(result.current.isError).toBe(true)
-      })
-
-      expect(result.current.error).toBe(error)
     })
   })
 
-  describe('useCreateTodo', () => {
-    it('should create todo successfully', async () => {
-      const newTodo: Todo = {
-        id: 2,
-        todo: 'New Todo',
-        completed: false,
-        userId: 1,
-      }
-
-      ;(todoApi.create as jest.Mock).mockResolvedValue(newTodo)
-
-      const { result } = renderHook(() => useCreateTodo(), {
-        wrapper: createWrapper(),
-      })
-
-      const createData = { todo: 'New Todo' }
-      result.current.mutate(createData)
-
-      await waitFor(() => {
-        expect(result.current.isSuccess).toBe(true)
-      })
-
-      expect(result.current.data).toEqual(newTodo)
-      expect(todoApi.create).toHaveBeenCalledWith(createData)
-    })
-
-    it('should handle error when creating todo fails', async () => {
-      const error = new Error('Failed to create todo')
-      ;(todoApi.create as jest.Mock).mockRejectedValue(error)
-
-      const { result } = renderHook(() => useCreateTodo(), {
-        wrapper: createWrapper(),
-      })
-
-      const createData = { todo: 'New Todo' }
-      result.current.mutate(createData)
-
-      await waitFor(() => {
-        expect(result.current.isError).toBe(true)
-      })
-
-      expect(result.current.error).toBe(error)
+  describe('Redux Store', () => {
+    it('should have initial state', () => {
+      const state = store.getState()
+      expect(state.todos.items).toEqual([])
+      expect(state.todos.loading).toBe(false)
+      expect(state.todos.error).toBe(null)
     })
   })
 })

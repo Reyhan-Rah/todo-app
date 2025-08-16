@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
-import { useTodos } from '@/hooks/useTodos'
+import { useEffect } from 'react'
+import { useAppDispatch, useAppSelector } from '@/store/hooks'
+import { fetchTodos, reorderTodos } from '@/store/todosSlice'
 import { Todo } from '@/services/api'
 import CreateTodoForm from './CreateTodoForm'
 import SortableTodoList from './SortableTodoList'
@@ -7,26 +8,22 @@ import TodoFilters from './TodoFilters'
 import LoadingSkeleton from './LoadingSkeleton'
 
 const TodoList = () => {
-  const { data: todos, isLoading, error } = useTodos()
-  const [filteredTodos, setFilteredTodos] = useState<Todo[]>([])
-  const [orderedTodos, setOrderedTodos] = useState<Todo[]>([])
+  const dispatch = useAppDispatch()
+  const { 
+    items: todos, 
+    filteredItems: filteredTodos, 
+    loading: isLoading, 
+    error 
+  } = useAppSelector(state => state.todos)
 
-  // Initialize filtered todos and ordered todos when todos data changes
+  // Fetch todos on component mount
   useEffect(() => {
-    if (todos) {
-      setFilteredTodos(todos)
-      setOrderedTodos(todos)
-    }
-  }, [todos])
+    dispatch(fetchTodos())
+  }, [dispatch])
 
   // Handle reordering of todos
   const handleReorder = (newOrder: Todo[]) => {
-    setOrderedTodos(newOrder)
-    // Update filtered todos to maintain the new order
-    const newFilteredOrder = newOrder.filter(todo => 
-      filteredTodos.some(filteredTodo => filteredTodo.id === todo.id)
-    )
-    setFilteredTodos(newFilteredOrder)
+    dispatch(reorderTodos(newOrder))
   }
 
   if (isLoading) {
@@ -46,7 +43,7 @@ const TodoList = () => {
         <div className="text-center">
           <div className="text-red-500 text-6xl mb-4">⚠️</div>
           <div className="text-xl font-semibold text-gray-900 mb-2">Error Loading Todos</div>
-          <div className="text-gray-600">{error.message}</div>
+          <div className="text-gray-600">{error}</div>
         </div>
       </div>
     )
@@ -62,13 +59,13 @@ const TodoList = () => {
 
       {/* Filters */}
       {todos && todos.length > 0 && (
-        <TodoFilters todos={orderedTodos} onFilterChange={setFilteredTodos} />
+        <TodoFilters todos={todos} />
       )}
 
       {/* Todo List */}
-      <SortableTodoList todos={filteredTodos} onReorder={handleReorder}>
+      <SortableTodoList todos={filteredTodos || []} onReorder={handleReorder}>
         {/* Empty State */}
-        {filteredTodos.length === 0 && todos && todos.length > 0 ? (
+        {filteredTodos && filteredTodos.length === 0 && todos && todos.length > 0 ? (
           <div className="text-center py-12">
             <div className="text-gray-400 text-6xl mb-4">🔍</div>
             <div className="text-xl font-medium text-gray-600 mb-2">No todos found</div>

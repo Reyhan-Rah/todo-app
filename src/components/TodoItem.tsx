@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Todo } from '@/services/api'
-import { useDeleteTodo, useToggleTodo } from '@/hooks/useTodos'
+import { useAppDispatch, useAppSelector } from '@/store/hooks'
+import { deleteTodo, toggleTodo } from '@/store/todosSlice'
 import { cn } from '@/lib/utils'
 import DeleteConfirmModal from './DeleteConfirmModal'
 
@@ -11,11 +12,11 @@ interface TodoItemProps {
 const TodoItem = ({ todo }: TodoItemProps) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   
-  const deleteTodoMutation = useDeleteTodo()
-  const toggleTodoMutation = useToggleTodo()
+  const dispatch = useAppDispatch()
+  const { loading: isDeleting } = useAppSelector(state => state.todos)
 
   const handleToggleTodo = () => {
-    toggleTodoMutation.mutate({ id: todo.id, completed: !todo.completed })
+    dispatch(toggleTodo({ id: todo.id, completed: !todo.completed }))
   }
 
   const handleDeleteClick = () => {
@@ -23,7 +24,7 @@ const TodoItem = ({ todo }: TodoItemProps) => {
   }
 
   const handleDeleteConfirm = () => {
-    deleteTodoMutation.mutate(todo.id)
+    dispatch(deleteTodo(todo.id))
     setShowDeleteModal(false)
   }
 
@@ -41,19 +42,19 @@ const TodoItem = ({ todo }: TodoItemProps) => {
         )}
       >
         <div className="flex items-center gap-3 flex-1">
-          <button
-            type="button"
-            onClick={handleToggleTodo}
-            disabled={toggleTodoMutation.isPending}
-            className={cn(
-              "w-5 h-5 rounded border-2 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2",
-              todo.completed
-                ? "bg-blue-500 border-blue-500 focus:ring-blue-500"
-                : "border-gray-300 focus:ring-blue-500 hover:border-blue-400",
-              toggleTodoMutation.isPending && "opacity-50 cursor-not-allowed"
-            )}
-            aria-label={todo.completed ? 'Mark as incomplete' : 'Mark as complete'}
-          >
+                        <button
+                type="button"
+                onClick={handleToggleTodo}
+                disabled={isDeleting}
+                className={cn(
+                  "w-5 h-5 rounded border-2 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2",
+                  todo.completed
+                    ? "bg-blue-500 border-blue-500 focus:ring-blue-500"
+                    : "border-gray-300 focus:ring-blue-500 hover:border-blue-400",
+                  isDeleting && "opacity-50 cursor-not-allowed"
+                )}
+                aria-label={todo.completed ? 'Mark as incomplete' : 'Mark as complete'}
+              >
             {todo.completed && (
               <svg
                 className="w-3 h-3 text-white mx-auto"
@@ -95,7 +96,7 @@ const TodoItem = ({ todo }: TodoItemProps) => {
         
         <button
           onClick={handleDeleteClick}
-          disabled={deleteTodoMutation.isPending}
+          disabled={isDeleting}
           className={cn(
             "px-3 py-1 text-red-500 hover:text-red-700 transition-colors",
             "focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 rounded",
@@ -103,7 +104,7 @@ const TodoItem = ({ todo }: TodoItemProps) => {
           )}
           aria-label={`Delete todo: ${todo.todo}`}
         >
-          {deleteTodoMutation.isPending ? 'Deleting...' : 'Delete'}
+          {isDeleting ? 'Deleting...' : 'Delete'}
         </button>
       </div>
 

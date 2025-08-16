@@ -6,6 +6,7 @@ const LoadingSkeleton = () => {
       {Array.from({ length: 5 }).map((_, index) => (
         <div
           key={index}
+          data-testid="loading-skeleton"
           className={cn(
             "p-4 bg-white border rounded-lg shadow-sm",
             "animate-pulse"
