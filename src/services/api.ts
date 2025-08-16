@@ -95,7 +95,7 @@ export class ApiError extends Error {
 }
 
 // API error handler
-export const handleApiError = (error: unknown): never => {
+export const handleApiError = (error: Error | { response?: { data?: { message?: string; code?: string }; status: number }; request?: Record<string, unknown> }): never => {
   // Type guard for axios errors
   if (error && typeof error === 'object' && 'response' in error) {
     const axiosError = error as { response?: { data?: { message?: string; code?: string }; status: number } }

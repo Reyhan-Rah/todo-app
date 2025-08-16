@@ -1,17 +1,21 @@
 // Mock the DnD kit components - these must be at the top level
 jest.mock('@dnd-kit/core', () => ({
-  DndContext: ({ children, onDragStart, onDragEnd }: any) => (
+  DndContext: ({ children, onDragStart, onDragEnd }: {
+    children: React.ReactNode
+    onDragStart: (event: DragStartEvent) => void
+    onDragEnd: (event: DragEndEvent) => void
+  }) => (
     <div data-testid="dnd-context">
       {children}
       <button
         data-testid="mock-drag-start"
-        onClick={() => onDragStart({ active: { id: 1 } } as any)}
+        onClick={() => onDragStart({ active: { id: 1 } } as DragStartEvent)}
       >
         Mock Drag Start
       </button>
       <button
         data-testid="mock-drag-end"
-        onClick={() => onDragEnd({ active: { id: 1 }, over: { id: 2 } } as any)}
+        onClick={() => onDragEnd({ active: { id: 1 }, over: { id: 2 } } as DragEndEvent)}
       >
         Mock Drag End
       </button>
@@ -50,7 +54,9 @@ jest.mock('@dnd-kit/sortable', () => ({
     transition: 'none',
     isDragging: false,
   })),
-  SortableContext: ({ children }: any) => <div data-testid="sortable-context">{children}</div>,
+  SortableContext: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="sortable-context">{children}</div>
+  ),
   arrayMove: jest.fn(),
   sortableKeyboardCoordinates: jest.fn(() => jest.fn()),
   verticalListSortingStrategy: jest.fn(() => 'verticalListSortingStrategy'),

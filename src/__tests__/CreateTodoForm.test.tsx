@@ -1,10 +1,12 @@
 import React from 'react'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
+import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
 import todosReducer from '../store/todosSlice'
 import CreateTodoForm from '../components/CreateTodoForm'
+import { CreateTodo } from '../services/api'
 
 // Create a test store
 const createTestStore = () => {
@@ -270,7 +272,7 @@ describe('CreateTodoForm', () => {
 
     it('should trim whitespace from input before validation', async () => {
       const { CreateTodoSchema } = jest.requireMock('@/services/api')
-      CreateTodoSchema.parse.mockImplementation((data: any) => {
+      CreateTodoSchema.parse.mockImplementation((data: CreateTodo) => {
         expect(data.todo).toBe('New Todo Item') // Should be trimmed
         return data
       })

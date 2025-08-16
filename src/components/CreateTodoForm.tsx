@@ -34,6 +34,8 @@ const CreateTodoForm = () => {
     } catch (error: unknown) {
       if (error instanceof Error) {
         setValidationError(error.message)
+      } else {
+        setValidationError('An unexpected error occurred')
       }
     }
   }

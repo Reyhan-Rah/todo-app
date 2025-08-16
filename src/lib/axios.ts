@@ -55,12 +55,12 @@ export const apiService = {
   },
   
   // POST request
-  post: <T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> => {
+  post: <T>(url: string, data?: Record<string, unknown>, config?: AxiosRequestConfig): Promise<T> => {
     return apiClient.post(url, data, config).then((response) => response.data)
   },
   
   // PUT request
-  put: <T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> => {
+  put: <T>(url: string, data?: Record<string, unknown>, config?: AxiosRequestConfig): Promise<T> => {
     return apiClient.put(url, data, config).then((response) => response.data)
   },
   
@@ -70,7 +70,7 @@ export const apiService = {
   },
   
   // PATCH request
-  patch: <T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> => {
+  patch: <T>(url: string, data?: Record<string, unknown>, config?: AxiosRequestConfig): Promise<T> => {
     return apiClient.patch(url, data, config).then((response) => response.data)
   },
 }

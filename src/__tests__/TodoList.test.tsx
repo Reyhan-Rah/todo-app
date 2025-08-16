@@ -29,7 +29,10 @@ jest.mock('@/services/api', () => ({
 
 // Mock the SortableTodoList component
 jest.mock('../components/SortableTodoList', () => {
-  return function MockSortableTodoList({ todos, onReorder }: any) {
+  return function MockSortableTodoList({ todos, onReorder }: {
+    todos: Todo[]
+    onReorder: (newOrder: Todo[]) => void
+  }) {
     return (
       <div data-testid="sortable-todo-list">
         {todos.map((todo: Todo) => (
