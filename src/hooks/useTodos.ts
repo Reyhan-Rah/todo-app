@@ -2,6 +2,17 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { todoApi, Todo, CreateTodo, UpdateTodo } from '@/services/api'
 import { handleApiError } from '@/services/api'
 
+// Toast context - this will be provided by the parent component
+let toastContext: {
+  showSuccess: (message: string) => void
+  showError: (message: string) => void
+  showInfo: (message: string) => void
+} | null = null
+
+export const setToastContext = (context: typeof toastContext) => {
+  toastContext = context
+}
+
 // Query keys for React Query
 export const todoKeys = {
   all: ['todos'] as const,
@@ -45,9 +56,13 @@ export const useCreateTodo = () => {
       queryClient.setQueryData(todoKeys.lists(), (old: Todo[] | undefined) => {
         return old ? [...old, newTodo] : [newTodo]
       })
+      
+      // Show success toast
+      toastContext?.showSuccess('Todo created successfully!')
     },
     onError: (error) => {
       handleApiError(error)
+      toastContext?.showError('Failed to create todo')
     },
   })
 }
@@ -69,9 +84,13 @@ export const useUpdateTodo = () => {
           todo.id === updatedTodo.id ? updatedTodo : todo
         )
       })
+      
+      // Show success toast
+      toastContext?.showSuccess('Todo updated successfully!')
     },
     onError: (error) => {
       handleApiError(error)
+      toastContext?.showError('Failed to update todo')
     },
   })
 }
@@ -90,9 +109,13 @@ export const useDeleteTodo = () => {
       queryClient.setQueryData(todoKeys.lists(), (old: Todo[] | undefined) => {
         return old?.filter(todo => todo.id !== deletedId)
       })
+      
+      // Show success toast
+      toastContext?.showSuccess('Todo deleted successfully!')
     },
     onError: (error) => {
       handleApiError(error)
+      toastContext?.showError('Failed to delete todo')
     },
   })
 }
@@ -114,9 +137,14 @@ export const useToggleTodo = () => {
           todo.id === updatedTodo.id ? updatedTodo : todo
         )
       })
+      
+      // Show success toast
+      const status = updatedTodo.completed ? 'completed' : 'incomplete'
+      toastContext?.showSuccess(`Todo marked as ${status}!`)
     },
     onError: (error) => {
       handleApiError(error)
+      toastContext?.showError('Failed to update todo status')
     },
   })
 }
