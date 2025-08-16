@@ -3,6 +3,9 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import TodoList from '@/components/TodoList'
+import ToastContainer from '@/components/ToastContainer'
+import { useToast } from '@/hooks/useToast'
+import { setToastContext } from '@/hooks/useTodos'
 
 // Create a client
 const queryClient = new QueryClient({
@@ -14,13 +17,25 @@ const queryClient = new QueryClient({
   },
 })
 
+function HomeContent() {
+  const { toasts, removeToast, showSuccess, showError, showInfo } = useToast()
+
+  // Provide toast context to the hooks
+  setToastContext({ showSuccess, showError, showInfo })
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <TodoList />
+      <ToastContainer toasts={toasts} onRemoveToast={removeToast} />
+    </div>
+  )
+}
+
 export default function Home() {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="min-h-screen bg-gray-50">
-        <TodoList />
-        <ReactQueryDevtools initialIsOpen={false} />
-      </div>
+      <HomeContent />
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   )
 }
