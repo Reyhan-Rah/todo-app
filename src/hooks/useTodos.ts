@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { todoApi, Todo, CreateTodo, UpdateTodo } from '@/services/api'
 import { handleApiError } from '@/services/api'
+import { AxiosError } from 'axios'
 
 // Toast context - this will be provided by the parent component
 let toastContext: {
@@ -49,14 +50,16 @@ export const useCreateTodo = () => {
   return useMutation({
     mutationFn: (data: CreateTodo) => todoApi.create(data),
     onSuccess: (newTodo) => {
-      // Invalidate and refetch todos list
-      queryClient.invalidateQueries({ queryKey: todoKeys.lists() })
+      // Invalidate and refetch todos list in real application
+      // queryClient.invalidateQueries({ queryKey: todoKeys.lists() })
       
+
       // Optimistically update the cache
       queryClient.setQueryData(todoKeys.lists(), (old: Todo[] | undefined) => {
-        return old ? [...old, newTodo] : [newTodo]
+        const newTodoWithUniqueId = { ...newTodo, id: newTodo.id + Math.random().toString(36).substring(2, 11) }
+        return old ? [newTodoWithUniqueId, ...old] : [newTodoWithUniqueId]
       })
-      
+    
       // Show success toast
       toastContext?.showSuccess('Todo created successfully!')
     },
@@ -113,7 +116,13 @@ export const useDeleteTodo = () => {
       // Show success toast
       toastContext?.showSuccess('Todo deleted successfully!')
     },
-    onError: (error) => {
+    onError: (error, id) => {
+      // A replacement for API call as it is not working
+      if (error instanceof Error && error instanceof AxiosError && error.status === 404) {
+        queryClient.setQueryData(todoKeys.lists(), (old: Todo[] | undefined) => {
+            return old?.filter(todo => todo.id!==id)
+        })
+      }
       handleApiError(error)
       toastContext?.showError('Failed to delete todo')
     },
@@ -142,7 +151,16 @@ export const useToggleTodo = () => {
       const status = updatedTodo.completed ? 'completed' : 'incomplete'
       toastContext?.showSuccess(`Todo marked as ${status}!`)
     },
-    onError: (error) => {
+    onError: (error, variables) => {
+      // if the error is a 404, we need to update the todo in the list cache
+      if (error instanceof Error && error instanceof AxiosError && error.status === 404) {
+        // Get the id from the mutation variables
+        const { id } = variables;
+        queryClient.setQueryData(todoKeys.lists(), (old: Todo[] | undefined) => {
+            return old?.map(todo => todo.id==id ? {...todo, completed: !todo.completed} : todo)
+        })
+      }
+
       handleApiError(error)
       toastContext?.showError('Failed to update todo status')
     },
