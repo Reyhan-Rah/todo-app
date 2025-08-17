@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import TodoList from './TodoList';
+import TodoList from './index';
 import { useTodos, useCreateTodo, useDeleteTodo, useToggleTodo } from '@/hooks/useTodos';
 
 // Mock the hooks

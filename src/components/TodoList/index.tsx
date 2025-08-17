@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useTodos } from '@/hooks/useTodos';
 import { Todo } from '@/services/api';
-import CreateTodoForm from './CreateTodoForm';
-import SortableTodoList from './SortableTodoList';
-import TodoFilters from './TodoFilters';
-import LoadingSkeleton from './LoadingSkeleton';
+import CreateTodoForm from '@/components/CreateTodoForm';
+import SortableTodoList from '@/components/SortableTodoList';
+import TodoFilters from '@/components/TodoFilters';
+import LoadingSkeleton from '@/components/LoadingSkeleton';
 
 const TodoList = () => {
   const { data: todos, isLoading, error } = useTodos();

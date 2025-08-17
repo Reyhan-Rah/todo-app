@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import TodoFilters from './TodoFilters';
+import TodoFilters from './index';
 
 describe('TodoFilters', () => {
   const mockTodos = [

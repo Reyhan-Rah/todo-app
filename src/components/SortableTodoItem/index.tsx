@@ -1,7 +1,7 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Todo } from '@/services/api';
-import TodoItem from './TodoItem';
+import TodoItem from '@/components/TodoItem';
 import { cn } from '@/lib/utils';
 
 interface SortableTodoItemProps {

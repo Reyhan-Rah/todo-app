@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // Mock the TodoItem component
-jest.mock('./TodoItem', () => ({
+jest.mock('@/components/TodoItem', () => ({
   default: ({ todo }: { todo: any }) => (
     <div data-testid={`todo-item-${todo.id}`}>
       {todo.todo}

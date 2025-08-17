@@ -1,5 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import DeleteConfirmModal from './DeleteConfirmModal';
+import '@testing-library/jest-dom';
+import DeleteConfirmModal from './index';
 
 describe('DeleteConfirmModal', () => {
   const defaultProps = {

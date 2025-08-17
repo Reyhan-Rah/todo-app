@@ -16,8 +16,8 @@ import {
 } from '@dnd-kit/sortable';
 import { useState } from 'react';
 import { Todo } from '@/services/api';
-import SortableTodoItem from './SortableTodoItem';
-import DragOverlay from './DragOverlay';
+import SortableTodoItem from '@/components/SortableTodoItem';
+import DragOverlay from '@/components/DragOverlay';
 
 interface SortableTodoListProps {
   todos: Todo[];

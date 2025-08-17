@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import LoadingSkeleton from './LoadingSkeleton';
+import LoadingSkeleton from './index';
 
 describe('LoadingSkeleton', () => {
   it('should render correctly', () => {

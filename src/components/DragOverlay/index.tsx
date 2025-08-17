@@ -1,7 +1,7 @@
 import { useDraggable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 import { Todo } from '@/services/api';
-import TodoItem from './TodoItem';
+import TodoItem from '@/components/TodoItem';
 
 interface DragOverlayProps {
   todo: Todo;

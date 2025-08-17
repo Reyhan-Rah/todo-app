@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import Toast from './Toast';
+import Toast from '@/components/Toast';
 
 export interface ToastMessage {
   id: string;

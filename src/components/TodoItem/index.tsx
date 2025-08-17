@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Todo } from '@/services/api';
 import { useDeleteTodo, useToggleTodo } from '@/hooks/useTodos';
 import { cn } from '@/lib/utils';
-import DeleteConfirmModal from './DeleteConfirmModal';
+import DeleteConfirmModal from '@/components/DeleteConfirmModal';
 
 interface TodoItemProps {
   todo: Todo;
