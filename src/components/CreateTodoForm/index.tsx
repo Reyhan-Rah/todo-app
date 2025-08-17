@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useCreateTodo } from '@/hooks/useTodos';
 import { CreateTodoSchema } from '@/services/api';
 import { cn } from '@/lib/utils';
+import { ZodError } from 'zod';
 
 const CreateTodoForm = () => {
   const [newTodoText, setNewTodoText] = useState('');
@@ -14,13 +15,14 @@ const CreateTodoForm = () => {
     setValidationError('');
 
     try {
-      // Validate input using Zod
+      // Validate input using Zod schema
       const validatedData = CreateTodoSchema.parse({
         todo: newTodoText.trim(),
         completed: false,
         userId: 1,
       });
 
+      // Proceed with mutation using validated data
       createTodoMutation.mutate(validatedData, {
         onSuccess: () => {
           setNewTodoText('');
@@ -31,8 +33,19 @@ const CreateTodoForm = () => {
         },
       });
     } catch (error) {
-      if (error instanceof Error) {
+      // Handle Zod validation errors
+      if (error && typeof error === 'object' && 'errors' in error && Array.isArray((error as any).errors)) {
+        // This is a ZodError
+        const firstError = (error as any).errors[0];
+        if (firstError && typeof firstError === 'object' && 'message' in firstError) {
+          setValidationError(firstError.message);
+        } else {
+          setValidationError('Validation failed');
+        }
+      } else if (error instanceof Error) {
         setValidationError(error.message);
+      } else {
+        setValidationError('An unexpected error occurred');
       }
     }
   };
