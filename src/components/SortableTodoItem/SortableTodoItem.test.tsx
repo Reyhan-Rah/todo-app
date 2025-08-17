@@ -1,3 +1,4 @@
+import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
@@ -14,15 +15,11 @@ jest.mock('@dnd-kit/sortable', () => ({
 }));
 
 // Mock the TodoItem component
-jest.mock('@/components/TodoItem', () => {
-  const MockedTodoItem = ({
-    todo,
-  }: {
-    todo: { id: number; todo: string; completed: boolean; userId: number };
-  }) => <div data-testid={`todo-item-${todo.id}`}>{todo.todo}</div>;
-  MockedTodoItem.displayName = 'MockedTodoItem';
-  return { default: MockedTodoItem };
-});
+jest.mock('@/components/TodoItem', () => ({
+  default: ({ todo }: { todo: any }) => (
+    <div data-testid={`todo-item-${todo.id}`}>{todo.todo}</div>
+  ),
+}));
 
 const createWrapper = () => {
   const queryClient = new QueryClient({

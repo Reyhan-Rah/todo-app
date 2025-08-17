@@ -5,6 +5,7 @@ A modern, feature-rich todo application built with **Next.js 15**, **React 19**,
 ## ✨ Features
 
 ### 🎯 Core Functionality
+
 - **View Todos**: Display a list of todos fetched from DummyJSON API
 - **Add Todo**: Create new todos with Zod validation
 - **Delete Todo**: Remove todos with confirmation modal
@@ -12,6 +13,7 @@ A modern, feature-rich todo application built with **Next.js 15**, **React 19**,
 - **Drag & Drop**: Reorder todos using intuitive drag-and-drop interface
 
 ### 🎨 User Experience
+
 - **Responsive Design**: Mobile-first approach with TailwindCSS
 - **Real-time Updates**: Immediate UI feedback for all actions
 - **Accessibility**: Full keyboard navigation and ARIA support
@@ -19,6 +21,7 @@ A modern, feature-rich todo application built with **Next.js 15**, **React 19**,
 - **Loading States**: Skeleton screens and loading indicators
 
 ### 🔧 Technical Features
+
 - **TypeScript**: Full type safety throughout the application
 - **React Query**: Efficient server state management and caching
 - **Zod Validation**: Runtime validation for form inputs
@@ -59,23 +62,27 @@ src/
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - **Node.js**: 18.17 or later
 - **npm**: 9.0 or later
 
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/Reyhan-Rah/todo-app.git
    cd todo-app
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Start development server**
+
    ```bash
    npm run dev
    ```
@@ -88,6 +95,7 @@ src/
 This application includes a comprehensive test suite with **146 tests** covering all core functionality.
 
 ### Running Tests
+
 ```bash
 # Run all tests
 npm test
@@ -103,6 +111,7 @@ npm run test:verbose
 ```
 
 ### Test Coverage
+
 - **CreateTodoForm**: Form validation, submission, and error handling
 - **TodoItem**: Individual todo interactions and state management
 - **TodoList**: Main application logic and data flow
@@ -111,6 +120,7 @@ npm run test:verbose
 - **Accessibility**: Keyboard navigation and ARIA compliance
 
 ### Testing Stack
+
 - **Jest**: Primary testing framework
 - **React Testing Library**: Component testing and user behavior validation
 - **@testing-library/jest-dom**: Custom matchers for DOM assertions
@@ -118,17 +128,20 @@ npm run test:verbose
 ## 🏗️ Build & Deployment
 
 ### Development Build
+
 ```bash
 npm run dev
 ```
 
 ### Production Build
+
 ```bash
 npm run build
 npm start
 ```
 
 ### Code Quality
+
 ```bash
 # Lint code
 npm run lint
@@ -143,43 +156,51 @@ npx prettier --write .
 ## 🛠️ Technology Stack
 
 ### Frontend Framework
+
 - **Next.js 15.4.4**: React framework with App Router
 - **React 19.1.0**: Latest React with concurrent features
 - **TypeScript 5.x**: Full type safety
 
 ### Styling & UI
+
 - **TailwindCSS 4.1.11**: Utility-first CSS framework
 - **Modern CSS**: CSS Grid, Flexbox, and custom properties
 
 ### State Management
+
 - **React Query/TanStack Query**: Server state management
 - **React Hooks**: Local component state
 
 ### Development Tools
+
 - **ESLint**: Code quality and consistency
 - **Prettier**: Code formatting
 - **Jest**: Testing framework
 - **React Testing Library**: Component testing
 
 ### External Services
+
 - **DummyJSON API**: Todo data source
 - **Axios**: HTTP client for API calls
 
 ## 📱 Features in Detail
 
 ### Todo Management
+
 - **Create**: Add new todos with real-time validation
 - **Read**: Fetch and display todos with loading states
 - **Update**: Toggle completion status with immediate feedback
 - **Delete**: Remove todos with confirmation dialog
 
 ### User Experience
+
 - **Responsive Design**: Works seamlessly on all device sizes
 - **Keyboard Navigation**: Full accessibility support
 - **Drag & Drop**: Intuitive todo reordering
 - **Search & Filter**: Find and organize todos efficiently
 
 ### Data Persistence
+
 - **API Integration**: Real-time data synchronization
 - **Optimistic Updates**: Immediate UI feedback
 - **Error Handling**: Graceful failure management

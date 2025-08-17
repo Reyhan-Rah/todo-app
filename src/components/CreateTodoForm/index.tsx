@@ -37,22 +37,17 @@ const CreateTodoForm = () => {
         error &&
         typeof error === 'object' &&
         'errors' in error &&
-        Array.isArray((error as Record<string, unknown>).errors)
+        Array.isArray((error as { errors: unknown[] }).errors)
       ) {
         // This is a ZodError
-        const errors = (error as Record<string, unknown>).errors;
-        if (Array.isArray(errors) && errors.length > 0) {
-          const firstError = errors[0];
-          if (
-            firstError &&
-            typeof firstError === 'object' &&
-            firstError !== null &&
-            'message' in firstError
-          ) {
-            setValidationError(String(firstError.message));
-          } else {
-            setValidationError('Validation failed');
-          }
+        const firstError = (error as { errors: Array<{ message?: string }> })
+          .errors[0];
+        if (
+          firstError &&
+          typeof firstError === 'object' &&
+          'message' in firstError
+        ) {
+          setValidationError(firstError.message || 'Validation failed');
         } else {
           setValidationError('Validation failed');
         }

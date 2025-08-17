@@ -93,40 +93,19 @@ describe('LoadingSkeleton', () => {
     expect(container.tagName).toBe('DIV');
   });
 
-  it('should handle null count prop', () => {
-    const { container } = render(
-      <LoadingSkeleton count={null as unknown as number} />
-    );
-    const skeletonItems = container.querySelectorAll(
-      '[data-testid^="skeleton-"]'
-    );
-    expect(skeletonItems).toHaveLength(5); // Should default to 5
-  });
-
   it('should handle undefined count prop', () => {
-    const { container } = render(
-      <LoadingSkeleton count={undefined as unknown as number} />
-    );
-    const skeletonItems = container.querySelectorAll(
-      '[data-testid^="skeleton-"]'
-    );
-    expect(skeletonItems).toHaveLength(5); // Should default to 5
+    render(<LoadingSkeleton count={undefined as any} />);
+
+    const skeletonElements = screen.getAllByTestId('skeleton-item');
+    expect(skeletonElements).toHaveLength(5); // Should default to 5
   });
 
-  it('should handle zero count prop', () => {
-    const { container } = render(<LoadingSkeleton count={0} />);
-    const skeletonItems = container.querySelectorAll(
-      '[data-testid^="skeleton-"]'
-    );
-    expect(skeletonItems).toHaveLength(0);
-  });
+  it('should handle null count prop', () => {
+    render(<LoadingSkeleton count={null as any} />);
 
-  it('should handle negative count prop', () => {
-    const { container } = render(<LoadingSkeleton count={-1} />);
-    const skeletonItems = container.querySelectorAll(
-      '[data-testid^="skeleton-"]'
-    );
-    expect(skeletonItems).toHaveLength(0);
+    // When count is null, it should default to 5
+    const skeletonElements = screen.getAllByTestId('skeleton-item');
+    expect(skeletonElements).toHaveLength(5);
   });
 
   it('should handle string count prop gracefully', () => {

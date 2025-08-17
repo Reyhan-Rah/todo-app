@@ -1,13 +1,12 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import TodoList from './index';
 import {
   useTodos,
   useCreateTodo,
   useDeleteTodo,
   useToggleTodo,
 } from '@/hooks/useTodos';
-import TodoList from './index';
 
 // Mock the hooks
 jest.mock('@/hooks/useTodos', () => ({
@@ -16,76 +15,6 @@ jest.mock('@/hooks/useTodos', () => ({
   useDeleteTodo: jest.fn(),
   useToggleTodo: jest.fn(),
 }));
-
-// Mock the CreateTodoForm component
-jest.mock('@/components/CreateTodoForm', () => {
-  const MockedCreateTodoForm = () => (
-    <div data-testid="create-todo-form">
-      <input placeholder="Add a new todo..." />
-      <button type="submit">Add Todo</button>
-    </div>
-  );
-  MockedCreateTodoForm.displayName = 'MockedCreateTodoForm';
-  return { default: MockedCreateTodoForm };
-});
-
-// Mock the SortableTodoList component
-jest.mock('@/components/SortableTodoList', () => {
-  const MockedSortableTodoList = ({
-    todos,
-    onReorder,
-  }: {
-    todos: any[];
-    onReorder: (oldIndex: number, newIndex: number) => void;
-  }) => (
-    <div data-testid="sortable-todo-list">
-      {todos.map((todo, index) => (
-        <div key={todo.id} data-testid={`todo-${todo.id}`}>
-          {todo.todo}
-        </div>
-      ))}
-    </div>
-  );
-  MockedSortableTodoList.displayName = 'MockedSortableTodoList';
-  return { default: MockedSortableTodoList };
-});
-
-// Mock the TodoFilters component
-jest.mock('@/components/TodoFilters', () => {
-  const MockedTodoFilters = ({
-    onSearch,
-    onStatusFilter,
-  }: {
-    onSearch: (query: string) => void;
-    onStatusFilter: (status: string) => void;
-  }) => (
-    <div data-testid="todo-filters">
-      <input placeholder="Search todos..." />
-      <select>
-        <option value="all">All</option>
-        <option value="active">Active</option>
-        <option value="completed">Completed</option>
-      </select>
-    </div>
-  );
-  MockedTodoFilters.displayName = 'MockedTodoFilters';
-  return { default: MockedTodoFilters };
-});
-
-// Mock the LoadingSkeleton component
-jest.mock('@/components/LoadingSkeleton', () => {
-  const MockedLoadingSkeleton = ({ count }: { count: number }) => (
-    <div data-testid="loading-skeleton">
-      {Array.from({ length: count }, (_, i) => (
-        <div key={i} data-testid={`skeleton-${i}`}>
-          Loading...
-        </div>
-      ))}
-    </div>
-  );
-  MockedLoadingSkeleton.displayName = 'MockedLoadingSkeleton';
-  return { default: MockedLoadingSkeleton };
-});
 
 const mockUseTodos = useTodos as jest.MockedFunction<typeof useTodos>;
 

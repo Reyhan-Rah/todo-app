@@ -3,35 +3,11 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import TodoItem from './index';
 import { useDeleteTodo, useToggleTodo } from '@/hooks/useTodos';
 
-// Mock the useDeleteTodo hook
+// Mock the hooks
 jest.mock('@/hooks/useTodos', () => ({
   useDeleteTodo: jest.fn(),
   useToggleTodo: jest.fn(),
 }));
-
-// Mock the DeleteConfirmModal component
-jest.mock('@/components/DeleteConfirmModal', () => {
-  const MockedDeleteConfirmModal = ({
-    isOpen,
-    onClose,
-    onConfirm,
-    todoText,
-  }: {
-    isOpen: boolean;
-    onClose: () => void;
-    onConfirm: () => void;
-    todoText: string;
-  }) =>
-    isOpen ? (
-      <div data-testid="delete-modal">
-        <p>Are you sure you want to delete "{todoText}"?</p>
-        <button onClick={onClose}>Cancel</button>
-        <button onClick={onConfirm}>Delete</button>
-      </div>
-    ) : null;
-  MockedDeleteConfirmModal.displayName = 'MockedDeleteConfirmModal';
-  return { default: MockedDeleteConfirmModal };
-});
 
 const mockUseDeleteTodo = useDeleteTodo as jest.MockedFunction<
   typeof useDeleteTodo

@@ -1,7 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useCreateTodo } from '@/hooks/useTodos';
 import CreateTodoForm from './index';
 
 // Mock the useCreateTodo hook
@@ -23,7 +22,9 @@ const createWrapper = () => {
 };
 
 describe('CreateTodoForm', () => {
-  const mockUseCreateTodo = jest.mocked(useCreateTodo);
+  const mockUseCreateTodo = jest.mocked(
+    require('@/hooks/useTodos').useCreateTodo
+  );
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -156,7 +157,7 @@ describe('CreateTodoForm', () => {
       mutate: mockMutate,
       isPending: false,
       isError: false,
-    } as any);
+    });
 
     render(<CreateTodoForm />, { wrapper: createWrapper() });
 
@@ -323,7 +324,7 @@ describe('CreateTodoForm', () => {
       mutate: mockMutate,
       isPending: false,
       isError: false,
-    } as any);
+    });
 
     render(<CreateTodoForm />, { wrapper: createWrapper() });
 
