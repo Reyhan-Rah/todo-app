@@ -1,15 +1,22 @@
 import { cn } from '@/lib/utils';
 
-const LoadingSkeleton = () => {
+interface LoadingSkeletonProps {
+  count?: number;
+}
+
+const LoadingSkeleton = ({ count = 5 }: LoadingSkeletonProps) => {
+  const safeCount = count ?? 5; // Handle null and undefined
   return (
-    <div className="space-y-3">
-      {Array.from({ length: 5 }).map((_, index) => (
+    <div data-testid="skeleton-container" className="space-y-3">
+      {Array.from({ length: Math.max(0, safeCount) }).map((_, index) => (
         <div
           key={index}
+          data-testid="skeleton-item"
           className={cn(
-            'p-4 bg-white border rounded-lg shadow-sm',
-            'animate-pulse'
+            'h-16 bg-gray-200 rounded-lg animate-pulse',
+            'p-4 bg-white border rounded-lg shadow-sm'
           )}
+          aria-hidden="true"
         >
           <div className="flex items-center gap-3">
             <div className="w-5 h-5 bg-gray-200 rounded"></div>
