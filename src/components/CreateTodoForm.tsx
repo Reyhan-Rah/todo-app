@@ -1,17 +1,17 @@
-import { useState } from 'react'
-import { useCreateTodo } from '@/hooks/useTodos'
-import { CreateTodoSchema } from '@/services/api'
-import { cn } from '@/lib/utils'
+import { useState } from 'react';
+import { useCreateTodo } from '@/hooks/useTodos';
+import { CreateTodoSchema } from '@/services/api';
+import { cn } from '@/lib/utils';
 
 const CreateTodoForm = () => {
-  const [newTodoText, setNewTodoText] = useState('')
-  const [validationError, setValidationError] = useState<string>('')
-  
-  const createTodoMutation = useCreateTodo()
+  const [newTodoText, setNewTodoText] = useState('');
+  const [validationError, setValidationError] = useState<string>('');
+
+  const createTodoMutation = useCreateTodo();
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setValidationError('')
+    e.preventDefault();
+    setValidationError('');
 
     try {
       // Validate input using Zod
@@ -19,33 +19,33 @@ const CreateTodoForm = () => {
         todo: newTodoText.trim(),
         completed: false,
         userId: 1,
-      })
+      });
 
       createTodoMutation.mutate(validatedData, {
         onSuccess: () => {
-          setNewTodoText('')
-          setValidationError('')
+          setNewTodoText('');
+          setValidationError('');
         },
-        onError: (error) => {
-          setValidationError(error.message || 'Failed to create todo')
+        onError: error => {
+          setValidationError(error.message || 'Failed to create todo');
         },
-      })
+      });
     } catch (error) {
       if (error instanceof Error) {
-        setValidationError(error.message)
+        setValidationError(error.message);
       }
     }
-  }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewTodoText(e.target.value)
+    setNewTodoText(e.target.value);
     // Clear validation error when user starts typing
     if (validationError) {
-      setValidationError('')
+      setValidationError('');
     }
-  }
+  };
 
-  const isFormValid = newTodoText.trim().length > 0
+  const isFormValid = newTodoText.trim().length > 0;
 
   return (
     <form onSubmit={handleSubmit} className="mb-6">
@@ -57,31 +57,31 @@ const CreateTodoForm = () => {
             onChange={handleInputChange}
             placeholder="Add a new todo..."
             className={cn(
-              "flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition-colors",
+              'flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition-colors',
               validationError
-                ? "border-red-300 focus:ring-red-500 focus:border-red-500"
-                : "border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
+                : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
             )}
             disabled={createTodoMutation.isPending}
-            aria-describedby={validationError ? "todo-error" : undefined}
+            aria-describedby={validationError ? 'todo-error' : undefined}
             aria-invalid={!!validationError}
           />
           <button
             type="submit"
             disabled={createTodoMutation.isPending || !isFormValid}
             className={cn(
-              "px-6 py-2 text-white rounded-lg transition-colors",
-              "focus:outline-none focus:ring-2 focus:ring-offset-2",
+              'px-6 py-2 text-white rounded-lg transition-colors',
+              'focus:outline-none focus:ring-2 focus:ring-offset-2',
               isFormValid
-                ? "bg-blue-500 hover:bg-blue-600 focus:ring-blue-500"
-                : "bg-gray-400 cursor-not-allowed",
-              createTodoMutation.isPending && "opacity-75 cursor-not-allowed"
+                ? 'bg-blue-500 hover:bg-blue-600 focus:ring-blue-500'
+                : 'bg-gray-400 cursor-not-allowed',
+              createTodoMutation.isPending && 'opacity-75 cursor-not-allowed'
             )}
           >
             {createTodoMutation.isPending ? 'Adding...' : 'Add Todo'}
           </button>
         </div>
-        
+
         {validationError && (
           <div
             id="todo-error"
@@ -105,7 +105,7 @@ const CreateTodoForm = () => {
         )}
       </div>
     </form>
-  )
-}
+  );
+};
 
-export default CreateTodoForm
+export default CreateTodoForm;

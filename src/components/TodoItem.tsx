@@ -1,43 +1,43 @@
-import { useState } from 'react'
-import { Todo } from '@/services/api'
-import { useDeleteTodo, useToggleTodo } from '@/hooks/useTodos'
-import { cn } from '@/lib/utils'
-import DeleteConfirmModal from './DeleteConfirmModal'
+import { useState } from 'react';
+import { Todo } from '@/services/api';
+import { useDeleteTodo, useToggleTodo } from '@/hooks/useTodos';
+import { cn } from '@/lib/utils';
+import DeleteConfirmModal from './DeleteConfirmModal';
 
 interface TodoItemProps {
-  todo: Todo
+  todo: Todo;
 }
 
 const TodoItem = ({ todo }: TodoItemProps) => {
-  const [showDeleteModal, setShowDeleteModal] = useState(false)
-  
-  const deleteTodoMutation = useDeleteTodo()
-  const toggleTodoMutation = useToggleTodo()
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const deleteTodoMutation = useDeleteTodo();
+  const toggleTodoMutation = useToggleTodo();
 
   const handleToggleTodo = () => {
-    toggleTodoMutation.mutate({ id: todo.id, completed: !todo.completed })
-  }
+    toggleTodoMutation.mutate({ id: todo.id, completed: !todo.completed });
+  };
 
   const handleDeleteClick = () => {
-    setShowDeleteModal(true)
-  }
+    setShowDeleteModal(true);
+  };
 
   const handleDeleteConfirm = () => {
-    deleteTodoMutation.mutate(todo.id)
-    setShowDeleteModal(false)
-  }
+    deleteTodoMutation.mutate(todo.id);
+    setShowDeleteModal(false);
+  };
 
   const handleDeleteCancel = () => {
-    setShowDeleteModal(false)
-  }
+    setShowDeleteModal(false);
+  };
 
   return (
     <>
       <div
         className={cn(
-          "flex items-center justify-between p-4 bg-white border rounded-lg shadow-sm",
-          "transition-all duration-200 hover:shadow-md",
-          todo.completed && "bg-gray-50"
+          'flex items-center justify-between p-4 bg-white border rounded-lg shadow-sm',
+          'transition-all duration-200 hover:shadow-md',
+          todo.completed && 'bg-gray-50'
         )}
       >
         <div className="flex items-center gap-3 flex-1">
@@ -46,13 +46,15 @@ const TodoItem = ({ todo }: TodoItemProps) => {
             onClick={handleToggleTodo}
             disabled={toggleTodoMutation.isPending}
             className={cn(
-              "w-5 h-5 rounded border-2 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2",
+              'w-5 h-5 rounded border-2 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2',
               todo.completed
-                ? "bg-blue-500 border-blue-500 focus:ring-blue-500"
-                : "border-gray-300 focus:ring-blue-500 hover:border-blue-400",
-              toggleTodoMutation.isPending && "opacity-50 cursor-not-allowed"
+                ? 'bg-blue-500 border-blue-500 focus:ring-blue-500'
+                : 'border-gray-300 focus:ring-blue-500 hover:border-blue-400',
+              toggleTodoMutation.isPending && 'opacity-50 cursor-not-allowed'
             )}
-            aria-label={todo.completed ? 'Mark as incomplete' : 'Mark as complete'}
+            aria-label={
+              todo.completed ? 'Mark as incomplete' : 'Mark as complete'
+            }
           >
             {todo.completed && (
               <svg
@@ -69,20 +71,18 @@ const TodoItem = ({ todo }: TodoItemProps) => {
               </svg>
             )}
           </button>
-          
+
           <span
             className={cn(
-              "text-lg transition-all duration-200 cursor-pointer select-none",
-              "hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded px-1",
-              todo.completed
-                ? "line-through text-gray-500"
-                : "text-gray-900"
+              'text-lg transition-all duration-200 cursor-pointer select-none',
+              'hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded px-1',
+              todo.completed ? 'line-through text-gray-500' : 'text-gray-900'
             )}
             onClick={handleToggleTodo}
-            onKeyDown={(e) => {
+            onKeyDown={e => {
               if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault()
-                handleToggleTodo()
+                e.preventDefault();
+                handleToggleTodo();
               }
             }}
             tabIndex={0}
@@ -92,14 +92,14 @@ const TodoItem = ({ todo }: TodoItemProps) => {
             {todo.todo}
           </span>
         </div>
-        
+
         <button
           onClick={handleDeleteClick}
           disabled={deleteTodoMutation.isPending}
           className={cn(
-            "px-3 py-1 text-red-500 hover:text-red-700 transition-colors",
-            "focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 rounded",
-            "disabled:opacity-50 disabled:cursor-not-allowed"
+            'px-3 py-1 text-red-500 hover:text-red-700 transition-colors',
+            'focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 rounded',
+            'disabled:opacity-50 disabled:cursor-not-allowed'
           )}
           aria-label={`Delete todo: ${todo.todo}`}
         >
@@ -114,7 +114,7 @@ const TodoItem = ({ todo }: TodoItemProps) => {
         todoTitle={todo.todo}
       />
     </>
-  )
-}
+  );
+};
 
-export default TodoItem
+export default TodoItem;

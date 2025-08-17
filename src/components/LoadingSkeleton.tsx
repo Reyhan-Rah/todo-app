@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils';
 
 const LoadingSkeleton = () => {
   return (
@@ -7,8 +7,8 @@ const LoadingSkeleton = () => {
         <div
           key={index}
           className={cn(
-            "p-4 bg-white border rounded-lg shadow-sm",
-            "animate-pulse"
+            'p-4 bg-white border rounded-lg shadow-sm',
+            'animate-pulse'
           )}
         >
           <div className="flex items-center gap-3">
@@ -21,7 +21,7 @@ const LoadingSkeleton = () => {
         </div>
       ))}
     </div>
-  )
-}
+  );
+};
 
-export default LoadingSkeleton
+export default LoadingSkeleton;

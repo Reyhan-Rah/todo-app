@@ -1,20 +1,20 @@
-import { useDraggable } from '@dnd-kit/core'
-import { CSS } from '@dnd-kit/utilities'
-import { Todo } from '@/services/api'
-import TodoItem from './TodoItem'
+import { useDraggable } from '@dnd-kit/core';
+import { CSS } from '@dnd-kit/utilities';
+import { Todo } from '@/services/api';
+import TodoItem from './TodoItem';
 
 interface DragOverlayProps {
-  todo: Todo
+  todo: Todo;
 }
 
 const DragOverlay = ({ todo }: DragOverlayProps) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: todo.id,
-  })
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
-  }
+  };
 
   return (
     <div
@@ -26,7 +26,7 @@ const DragOverlay = ({ todo }: DragOverlayProps) => {
     >
       <TodoItem todo={todo} />
     </div>
-  )
-}
+  );
+};
 
-export default DragOverlay
+export default DragOverlay;
