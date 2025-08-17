@@ -1,7 +1,13 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  useTodos,
+  useCreateTodo,
+  useDeleteTodo,
+  useToggleTodo,
+} from '@/hooks/useTodos';
 import TodoList from './index';
-import { useTodos, useCreateTodo, useDeleteTodo, useToggleTodo } from '@/hooks/useTodos';
 
 // Mock the hooks
 jest.mock('@/hooks/useTodos', () => ({
@@ -10,6 +16,76 @@ jest.mock('@/hooks/useTodos', () => ({
   useDeleteTodo: jest.fn(),
   useToggleTodo: jest.fn(),
 }));
+
+// Mock the CreateTodoForm component
+jest.mock('@/components/CreateTodoForm', () => {
+  const MockedCreateTodoForm = () => (
+    <div data-testid="create-todo-form">
+      <input placeholder="Add a new todo..." />
+      <button type="submit">Add Todo</button>
+    </div>
+  );
+  MockedCreateTodoForm.displayName = 'MockedCreateTodoForm';
+  return { default: MockedCreateTodoForm };
+});
+
+// Mock the SortableTodoList component
+jest.mock('@/components/SortableTodoList', () => {
+  const MockedSortableTodoList = ({
+    todos,
+    onReorder,
+  }: {
+    todos: any[];
+    onReorder: (oldIndex: number, newIndex: number) => void;
+  }) => (
+    <div data-testid="sortable-todo-list">
+      {todos.map((todo, index) => (
+        <div key={todo.id} data-testid={`todo-${todo.id}`}>
+          {todo.todo}
+        </div>
+      ))}
+    </div>
+  );
+  MockedSortableTodoList.displayName = 'MockedSortableTodoList';
+  return { default: MockedSortableTodoList };
+});
+
+// Mock the TodoFilters component
+jest.mock('@/components/TodoFilters', () => {
+  const MockedTodoFilters = ({
+    onSearch,
+    onStatusFilter,
+  }: {
+    onSearch: (query: string) => void;
+    onStatusFilter: (status: string) => void;
+  }) => (
+    <div data-testid="todo-filters">
+      <input placeholder="Search todos..." />
+      <select>
+        <option value="all">All</option>
+        <option value="active">Active</option>
+        <option value="completed">Completed</option>
+      </select>
+    </div>
+  );
+  MockedTodoFilters.displayName = 'MockedTodoFilters';
+  return { default: MockedTodoFilters };
+});
+
+// Mock the LoadingSkeleton component
+jest.mock('@/components/LoadingSkeleton', () => {
+  const MockedLoadingSkeleton = ({ count }: { count: number }) => (
+    <div data-testid="loading-skeleton">
+      {Array.from({ length: count }, (_, i) => (
+        <div key={i} data-testid={`skeleton-${i}`}>
+          Loading...
+        </div>
+      ))}
+    </div>
+  );
+  MockedLoadingSkeleton.displayName = 'MockedLoadingSkeleton';
+  return { default: MockedLoadingSkeleton };
+});
 
 const mockUseTodos = useTodos as jest.MockedFunction<typeof useTodos>;
 
@@ -22,9 +98,7 @@ const createWrapper = () => {
   });
 
   return ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 };
 
@@ -40,7 +114,7 @@ describe('TodoList', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Mock useCreateTodo to return a working mutation object
     mockUseCreateTodo.mockReturnValue({
       mutate: jest.fn(),
@@ -122,7 +196,9 @@ describe('TodoList', () => {
 
     expect(screen.getByText('Todo List')).toBeInTheDocument();
     expect(screen.getByText('No todos yet')).toBeInTheDocument();
-    expect(screen.getByText('Add your first todo above to get started!')).toBeInTheDocument();
+    expect(
+      screen.getByText('Add your first todo above to get started!')
+    ).toBeInTheDocument();
   });
 
   it('should render todos when data is available', () => {
@@ -165,7 +241,9 @@ describe('TodoList', () => {
 
     render(<TodoList />, { wrapper: createWrapper() });
 
-    expect(screen.queryByPlaceholderText('Search todos...')).not.toBeInTheDocument();
+    expect(
+      screen.queryByPlaceholderText('Search todos...')
+    ).not.toBeInTheDocument();
     expect(screen.queryByText('Status:')).not.toBeInTheDocument();
   });
 
@@ -178,8 +256,12 @@ describe('TodoList', () => {
 
     render(<TodoList />, { wrapper: createWrapper() });
 
-    expect(screen.getByPlaceholderText('Add a new todo...')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Add Todo' })).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText('Add a new todo...')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Add Todo' })
+    ).toBeInTheDocument();
   });
 
   it('should show filtered results message when filters are applied', () => {
@@ -210,7 +292,9 @@ describe('TodoList', () => {
     fireEvent.change(searchInput, { target: { value: 'Nonexistent' } });
 
     expect(screen.getByText('No todos found')).toBeInTheDocument();
-    expect(screen.getByText('Try adjusting your search or filters')).toBeInTheDocument();
+    expect(
+      screen.getByText('Try adjusting your search or filters')
+    ).toBeInTheDocument();
   });
 
   it('should handle reordering of todos', async () => {
@@ -312,7 +396,9 @@ describe('TodoList', () => {
 
     expect(screen.getByText('📝')).toBeInTheDocument();
     expect(screen.getByText('No todos yet')).toBeInTheDocument();
-    expect(screen.getByText('Add your first todo above to get started!')).toBeInTheDocument();
+    expect(
+      screen.getByText('Add your first todo above to get started!')
+    ).toBeInTheDocument();
   });
 
   it('should render filtered empty state with proper structure', () => {
@@ -329,6 +415,8 @@ describe('TodoList', () => {
 
     expect(screen.getByText('🔍')).toBeInTheDocument();
     expect(screen.getByText('No todos found')).toBeInTheDocument();
-    expect(screen.getByText('Try adjusting your search or filters')).toBeInTheDocument();
+    expect(
+      screen.getByText('Try adjusting your search or filters')
+    ).toBeInTheDocument();
   });
 });

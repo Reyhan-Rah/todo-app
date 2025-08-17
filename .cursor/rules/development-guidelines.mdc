@@ -70,7 +70,6 @@ You provide **thoughtful, nuanced answers** and are **brilliant at reasoning**. 
     services/      # API calls & external services
     store/         # State management
     constants/     # App constants
-    __tests__/     # Test files
   ```
 
 ### **File Organization**

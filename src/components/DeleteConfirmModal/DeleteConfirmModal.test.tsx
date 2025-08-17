@@ -31,8 +31,12 @@ describe('DeleteConfirmModal', () => {
     render(<DeleteConfirmModal {...defaultProps} />);
 
     expect(screen.getByText('Delete Todo')).toBeInTheDocument();
-    expect(screen.getByText(/Are you sure you want to delete/)).toBeInTheDocument();
-    expect(screen.getByText(/This action cannot be undone/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Are you sure you want to delete/)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/This action cannot be undone/)
+    ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Delete' })).toBeInTheDocument();
   });
@@ -41,8 +45,12 @@ describe('DeleteConfirmModal', () => {
     const customTitle = 'Custom Todo Title';
     render(<DeleteConfirmModal {...defaultProps} todoTitle={customTitle} />);
 
-    expect(screen.getByText(/Are you sure you want to delete/)).toBeInTheDocument();
-    expect(screen.getByText(/This action cannot be undone/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Are you sure you want to delete/)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/This action cannot be undone/)
+    ).toBeInTheDocument();
   });
 
   it('should call onClose when Cancel button is clicked', () => {
@@ -102,7 +110,10 @@ describe('DeleteConfirmModal', () => {
     const modal = screen.getByRole('dialog');
     expect(modal).toHaveAttribute('aria-modal', 'true');
     expect(modal).toHaveAttribute('aria-labelledby', 'delete-modal-title');
-    expect(modal).toHaveAttribute('aria-describedby', 'delete-modal-description');
+    expect(modal).toHaveAttribute(
+      'aria-describedby',
+      'delete-modal-description'
+    );
 
     const title = screen.getByText('Delete Todo');
     expect(title).toHaveAttribute('id', 'delete-modal-title');
@@ -115,7 +126,7 @@ describe('DeleteConfirmModal', () => {
     render(<DeleteConfirmModal {...defaultProps} />);
 
     const deleteButton = screen.getByRole('button', { name: 'Delete' });
-    
+
     await waitFor(() => {
       expect(document.activeElement).toBe(deleteButton);
     });
@@ -129,11 +140,11 @@ describe('DeleteConfirmModal', () => {
 
   it('should restore body overflow when modal closes', () => {
     const { rerender } = render(<DeleteConfirmModal {...defaultProps} />);
-    
+
     expect(document.body.style.overflow).toBe('hidden');
 
     rerender(<DeleteConfirmModal {...defaultProps} isOpen={false} />);
-    
+
     expect(document.body.style.overflow).toBe('unset');
   });
 
@@ -141,36 +152,52 @@ describe('DeleteConfirmModal', () => {
     const specialTitle = 'Todo with <script>alert("xss")</script> & émojis 🚀';
     render(<DeleteConfirmModal {...defaultProps} todoTitle={specialTitle} />);
 
-    expect(screen.getByText(/Todo with <script>alert\("xss"\)<\/script> & émojis 🚀/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Todo with <script>alert\("xss"\)<\/script> & émojis 🚀/)
+    ).toBeInTheDocument();
   });
 
   it('should handle very long todo title', () => {
     const longTitle = 'A'.repeat(100);
     render(<DeleteConfirmModal {...defaultProps} todoTitle={longTitle} />);
 
-    expect(screen.getByText(/Are you sure you want to delete/)).toBeInTheDocument();
-    expect(screen.getByText(/This action cannot be undone/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Are you sure you want to delete/)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/This action cannot be undone/)
+    ).toBeInTheDocument();
   });
 
   it('should handle empty todo title', () => {
     const emptyTitle = '';
     render(<DeleteConfirmModal {...defaultProps} todoTitle={emptyTitle} />);
 
-    expect(screen.getByText(/Are you sure you want to delete/)).toBeInTheDocument();
-    expect(screen.getByText(/This action cannot be undone/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Are you sure you want to delete/)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/This action cannot be undone/)
+    ).toBeInTheDocument();
   });
 
   it('should handle todo title with quotes', () => {
     const titleWithQuotes = 'Todo with "quotes" and \'apostrophes\'';
-    render(<DeleteConfirmModal {...defaultProps} todoTitle={titleWithQuotes} />);
+    render(
+      <DeleteConfirmModal {...defaultProps} todoTitle={titleWithQuotes} />
+    );
 
-    expect(screen.getByText(/Todo with "quotes" and 'apostrophes'/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Todo with "quotes" and 'apostrophes'/)
+    ).toBeInTheDocument();
   });
 
   it('should render with proper icon', () => {
     render(<DeleteConfirmModal {...defaultProps} />);
 
-    const icon = screen.getByText('Delete Todo').previousElementSibling?.querySelector('svg');
+    const icon = screen
+      .getByText('Delete Todo')
+      .previousElementSibling?.querySelector('svg');
     expect(icon).toBeInTheDocument();
     expect(icon).toHaveClass('w-6', 'h-6', 'text-red-600');
   });
@@ -190,7 +217,7 @@ describe('DeleteConfirmModal', () => {
     render(<DeleteConfirmModal {...defaultProps} onConfirm={mockOnConfirm} />);
 
     const deleteButton = screen.getByRole('button', { name: 'Delete' });
-    
+
     // Click multiple times rapidly
     fireEvent.click(deleteButton);
     fireEvent.click(deleteButton);
@@ -204,7 +231,7 @@ describe('DeleteConfirmModal', () => {
     render(<DeleteConfirmModal {...defaultProps} onClose={mockOnClose} />);
 
     const cancelButton = screen.getByRole('button', { name: 'Cancel' });
-    
+
     // Click multiple times rapidly
     fireEvent.click(cancelButton);
     fireEvent.click(cancelButton);
@@ -234,18 +261,18 @@ describe('DeleteConfirmModal', () => {
     render(<DeleteConfirmModal {...defaultProps} />);
 
     const deleteButton = screen.getByRole('button', { name: 'Delete' });
-    
+
     // Focus should be on delete button initially
     expect(document.activeElement).toBe(deleteButton);
   });
 
   it('should handle component unmounting gracefully', () => {
     const { unmount } = render(<DeleteConfirmModal {...defaultProps} />);
-    
+
     expect(document.body.style.overflow).toBe('hidden');
-    
+
     unmount();
-    
+
     expect(document.body.style.overflow).toBe('unset');
   });
 
@@ -267,7 +294,11 @@ describe('DeleteConfirmModal', () => {
     const htmlTitle = 'Todo with &amp; &lt; &gt; &quot;';
     render(<DeleteConfirmModal {...defaultProps} todoTitle={htmlTitle} />);
 
-    expect(screen.getByText(/Are you sure you want to delete/)).toBeInTheDocument();
-    expect(screen.getByText(/This action cannot be undone/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Are you sure you want to delete/)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/This action cannot be undone/)
+    ).toBeInTheDocument();
   });
 });

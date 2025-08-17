@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useCreateTodo } from '@/hooks/useTodos';
 import { CreateTodoSchema } from '@/services/api';
 import { cn } from '@/lib/utils';
-import { ZodError } from 'zod';
 
 const CreateTodoForm = () => {
   const [newTodoText, setNewTodoText] = useState('');
@@ -34,11 +33,26 @@ const CreateTodoForm = () => {
       });
     } catch (error) {
       // Handle Zod validation errors
-      if (error && typeof error === 'object' && 'errors' in error && Array.isArray((error as any).errors)) {
+      if (
+        error &&
+        typeof error === 'object' &&
+        'errors' in error &&
+        Array.isArray((error as Record<string, unknown>).errors)
+      ) {
         // This is a ZodError
-        const firstError = (error as any).errors[0];
-        if (firstError && typeof firstError === 'object' && 'message' in firstError) {
-          setValidationError(firstError.message);
+        const errors = (error as Record<string, unknown>).errors;
+        if (Array.isArray(errors) && errors.length > 0) {
+          const firstError = errors[0];
+          if (
+            firstError &&
+            typeof firstError === 'object' &&
+            firstError !== null &&
+            'message' in firstError
+          ) {
+            setValidationError(String(firstError.message));
+          } else {
+            setValidationError('Validation failed');
+          }
         } else {
           setValidationError('Validation failed');
         }

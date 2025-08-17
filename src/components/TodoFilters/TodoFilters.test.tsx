@@ -17,7 +17,9 @@ describe('TodoFilters', () => {
   });
 
   it('should render correctly with all filter elements', () => {
-    render(<TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />);
+    render(
+      <TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />
+    );
 
     expect(screen.getByPlaceholderText('Search todos...')).toBeInTheDocument();
     expect(screen.getByText('Status:')).toBeInTheDocument();
@@ -28,7 +30,9 @@ describe('TodoFilters', () => {
   });
 
   it('should display correct todo counts', () => {
-    render(<TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />);
+    render(
+      <TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />
+    );
 
     expect(screen.getByText('Total: 5')).toBeInTheDocument();
     expect(screen.getByText('Completed: 2')).toBeInTheDocument();
@@ -36,7 +40,9 @@ describe('TodoFilters', () => {
   });
 
   it('should filter todos by search term', async () => {
-    render(<TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />);
+    render(
+      <TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />
+    );
 
     const searchInput = screen.getByPlaceholderText('Search todos...');
     fireEvent.change(searchInput, { target: { value: 'completed' } });
@@ -50,7 +56,9 @@ describe('TodoFilters', () => {
   });
 
   it('should filter todos by status - completed', async () => {
-    render(<TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />);
+    render(
+      <TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />
+    );
 
     const statusSelect = screen.getByDisplayValue('All');
     fireEvent.change(statusSelect, { target: { value: 'completed' } });
@@ -64,7 +72,9 @@ describe('TodoFilters', () => {
   });
 
   it('should filter todos by status - incomplete', async () => {
-    render(<TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />);
+    render(
+      <TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />
+    );
 
     const statusSelect = screen.getByDisplayValue('All');
     fireEvent.change(statusSelect, { target: { value: 'incomplete' } });
@@ -79,14 +89,16 @@ describe('TodoFilters', () => {
   });
 
   it('should filter todos by both search term and status', async () => {
-    render(<TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />);
+    render(
+      <TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />
+    );
 
     const searchInput = screen.getByPlaceholderText('Search todos...');
     const statusSelect = screen.getByDisplayValue('All');
 
     // Set search term
     fireEvent.change(searchInput, { target: { value: 'todo' } });
-    
+
     // Set status to incomplete
     fireEvent.change(statusSelect, { target: { value: 'incomplete' } });
 
@@ -100,7 +112,9 @@ describe('TodoFilters', () => {
   });
 
   it('should show clear filters button when filters are applied', async () => {
-    render(<TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />);
+    render(
+      <TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />
+    );
 
     const searchInput = screen.getByPlaceholderText('Search todos...');
     fireEvent.change(searchInput, { target: { value: 'test' } });
@@ -111,7 +125,9 @@ describe('TodoFilters', () => {
   });
 
   it('should clear all filters when clear filters button is clicked', async () => {
-    render(<TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />);
+    render(
+      <TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />
+    );
 
     const searchInput = screen.getByPlaceholderText('Search todos...');
     const statusSelect = screen.getByDisplayValue('All');
@@ -132,7 +148,9 @@ describe('TodoFilters', () => {
   });
 
   it('should show filtered results count when filters are applied', async () => {
-    render(<TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />);
+    render(
+      <TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />
+    );
 
     const searchInput = screen.getByPlaceholderText('Search todos...');
     fireEvent.change(searchInput, { target: { value: 'completed' } });
@@ -143,7 +161,9 @@ describe('TodoFilters', () => {
   });
 
   it('should handle case-insensitive search', async () => {
-    render(<TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />);
+    render(
+      <TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />
+    );
 
     const searchInput = screen.getByPlaceholderText('Search todos...');
     fireEvent.change(searchInput, { target: { value: 'COMPLETED' } });
@@ -159,10 +179,17 @@ describe('TodoFilters', () => {
   it('should handle search with special characters', async () => {
     const specialTodos = [
       { id: 1, todo: 'Todo with émojis 🎉', completed: false, userId: 1 },
-      { id: 2, todo: 'Todo with <script>alert("xss")</script>', completed: false, userId: 1 },
+      {
+        id: 2,
+        todo: 'Todo with <script>alert("xss")</script>',
+        completed: false,
+        userId: 1,
+      },
     ];
 
-    render(<TodoFilters todos={specialTodos} onFilterChange={mockOnFilterChange} />);
+    render(
+      <TodoFilters todos={specialTodos} onFilterChange={mockOnFilterChange} />
+    );
 
     const searchInput = screen.getByPlaceholderText('Search todos...');
     fireEvent.change(searchInput, { target: { value: 'émojis' } });
@@ -175,7 +202,9 @@ describe('TodoFilters', () => {
   });
 
   it('should handle empty search term', async () => {
-    render(<TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />);
+    render(
+      <TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />
+    );
 
     const searchInput = screen.getByPlaceholderText('Search todos...');
     fireEvent.change(searchInput, { target: { value: '' } });
@@ -186,7 +215,9 @@ describe('TodoFilters', () => {
   });
 
   it('should handle whitespace-only search term', async () => {
-    render(<TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />);
+    render(
+      <TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />
+    );
 
     const searchInput = screen.getByPlaceholderText('Search todos...');
     fireEvent.change(searchInput, { target: { value: '   ' } });
@@ -197,13 +228,15 @@ describe('TodoFilters', () => {
   });
 
   it('should handle status filter change to all', async () => {
-    render(<TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />);
+    render(
+      <TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />
+    );
 
     const statusSelect = screen.getByDisplayValue('All');
-    
+
     // First set to completed
     fireEvent.change(statusSelect, { target: { value: 'completed' } });
-    
+
     // Then set back to all
     fireEvent.change(statusSelect, { target: { value: 'all' } });
 
@@ -221,9 +254,17 @@ describe('TodoFilters', () => {
   });
 
   it('should handle todos with all completed status', () => {
-    const allCompletedTodos = mockTodos.map(todo => ({ ...todo, completed: true }));
-    
-    render(<TodoFilters todos={allCompletedTodos} onFilterChange={mockOnFilterChange} />);
+    const allCompletedTodos = mockTodos.map(todo => ({
+      ...todo,
+      completed: true,
+    }));
+
+    render(
+      <TodoFilters
+        todos={allCompletedTodos}
+        onFilterChange={mockOnFilterChange}
+      />
+    );
 
     expect(screen.getByText('Total: 5')).toBeInTheDocument();
     expect(screen.getByText('Completed: 5')).toBeInTheDocument();
@@ -231,9 +272,17 @@ describe('TodoFilters', () => {
   });
 
   it('should handle todos with all incomplete status', () => {
-    const allIncompleteTodos = mockTodos.map(todo => ({ ...todo, completed: false }));
-    
-    render(<TodoFilters todos={allIncompleteTodos} onFilterChange={mockOnFilterChange} />);
+    const allIncompleteTodos = mockTodos.map(todo => ({
+      ...todo,
+      completed: false,
+    }));
+
+    render(
+      <TodoFilters
+        todos={allIncompleteTodos}
+        onFilterChange={mockOnFilterChange}
+      />
+    );
 
     expect(screen.getByText('Total: 5')).toBeInTheDocument();
     expect(screen.getByText('Completed: 0')).toBeInTheDocument();
@@ -247,7 +296,9 @@ describe('TodoFilters', () => {
       { id: 2, todo: 'Short todo', completed: false, userId: 1 },
     ];
 
-    render(<TodoFilters todos={longTodos} onFilterChange={mockOnFilterChange} />);
+    render(
+      <TodoFilters todos={longTodos} onFilterChange={mockOnFilterChange} />
+    );
 
     const searchInput = screen.getByPlaceholderText('Search todos...');
     fireEvent.change(searchInput, { target: { value: 'A' } });
@@ -260,7 +311,9 @@ describe('TodoFilters', () => {
   });
 
   it('should handle search with partial matches', async () => {
-    render(<TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />);
+    render(
+      <TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />
+    );
 
     const searchInput = screen.getByPlaceholderText('Search todos...');
     fireEvent.change(searchInput, { target: { value: 'todo' } });
@@ -277,7 +330,9 @@ describe('TodoFilters', () => {
   });
 
   it('should handle search with no matches', async () => {
-    render(<TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />);
+    render(
+      <TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />
+    );
 
     const searchInput = screen.getByPlaceholderText('Search todos...');
     fireEvent.change(searchInput, { target: { value: 'nonexistent' } });
@@ -305,7 +360,9 @@ describe('TodoFilters', () => {
       { id: 2, todo: 'Another new todo', completed: true, userId: 1 },
     ];
 
-    rerender(<TodoFilters todos={newTodos} onFilterChange={mockOnFilterChange} />);
+    rerender(
+      <TodoFilters todos={newTodos} onFilterChange={mockOnFilterChange} />
+    );
 
     await waitFor(() => {
       expect(searchInput).toHaveValue('todo');
@@ -314,7 +371,9 @@ describe('TodoFilters', () => {
   });
 
   it('should have proper accessibility attributes', () => {
-    render(<TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />);
+    render(
+      <TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />
+    );
 
     const searchInput = screen.getByPlaceholderText('Search todos...');
     const statusSelect = screen.getByDisplayValue('All');
@@ -325,7 +384,9 @@ describe('TodoFilters', () => {
   });
 
   it('should handle rapid filter changes gracefully', async () => {
-    render(<TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />);
+    render(
+      <TodoFilters todos={mockTodos} onFilterChange={mockOnFilterChange} />
+    );
 
     const searchInput = screen.getByPlaceholderText('Search todos...');
     const statusSelect = screen.getByDisplayValue('All');

@@ -59,7 +59,7 @@ describe('LoadingSkeleton', () => {
     render(<LoadingSkeleton count={2} />);
 
     const skeletonElements = screen.getAllByTestId('skeleton-item');
-    
+
     skeletonElements.forEach(element => {
       expect(element).toHaveClass('animate-pulse');
       expect(element).toHaveClass('bg-gray-200');
@@ -79,7 +79,7 @@ describe('LoadingSkeleton', () => {
     render(<LoadingSkeleton />);
 
     const skeletonElements = screen.getAllByTestId('skeleton-item');
-    
+
     skeletonElements.forEach(element => {
       expect(element).toHaveAttribute('aria-hidden', 'true');
     });
@@ -93,19 +93,40 @@ describe('LoadingSkeleton', () => {
     expect(container.tagName).toBe('DIV');
   });
 
-  it('should handle undefined count prop', () => {
-    render(<LoadingSkeleton count={undefined as any} />);
-
-    const skeletonElements = screen.getAllByTestId('skeleton-item');
-    expect(skeletonElements).toHaveLength(5); // Should default to 5
+  it('should handle null count prop', () => {
+    const { container } = render(
+      <LoadingSkeleton count={null as unknown as number} />
+    );
+    const skeletonItems = container.querySelectorAll(
+      '[data-testid^="skeleton-"]'
+    );
+    expect(skeletonItems).toHaveLength(5); // Should default to 5
   });
 
-  it('should handle null count prop', () => {
-    render(<LoadingSkeleton count={null as any} />);
+  it('should handle undefined count prop', () => {
+    const { container } = render(
+      <LoadingSkeleton count={undefined as unknown as number} />
+    );
+    const skeletonItems = container.querySelectorAll(
+      '[data-testid^="skeleton-"]'
+    );
+    expect(skeletonItems).toHaveLength(5); // Should default to 5
+  });
 
-    // When count is null, it should default to 5
-    const skeletonElements = screen.getAllByTestId('skeleton-item');
-    expect(skeletonElements).toHaveLength(5);
+  it('should handle zero count prop', () => {
+    const { container } = render(<LoadingSkeleton count={0} />);
+    const skeletonItems = container.querySelectorAll(
+      '[data-testid^="skeleton-"]'
+    );
+    expect(skeletonItems).toHaveLength(0);
+  });
+
+  it('should handle negative count prop', () => {
+    const { container } = render(<LoadingSkeleton count={-1} />);
+    const skeletonItems = container.querySelectorAll(
+      '[data-testid^="skeleton-"]'
+    );
+    expect(skeletonItems).toHaveLength(0);
   });
 
   it('should handle string count prop gracefully', () => {
@@ -126,7 +147,7 @@ describe('LoadingSkeleton', () => {
     render(<LoadingSkeleton count={4} />);
 
     const skeletonElements = screen.getAllByTestId('skeleton-item');
-    
+
     skeletonElements.forEach(element => {
       expect(element).toHaveClass('animate-pulse');
       expect(element).toHaveClass('bg-gray-200');
@@ -139,7 +160,7 @@ describe('LoadingSkeleton', () => {
     render(<LoadingSkeleton />);
 
     const skeletonElements = screen.getAllByTestId('skeleton-item');
-    
+
     skeletonElements.forEach(element => {
       expect(element).toHaveClass('animate-pulse');
     });
@@ -149,7 +170,7 @@ describe('LoadingSkeleton', () => {
     render(<LoadingSkeleton />);
 
     const skeletonElements = screen.getAllByTestId('skeleton-item');
-    
+
     skeletonElements.forEach(element => {
       expect(element).toHaveClass('bg-gray-200');
     });
@@ -159,7 +180,7 @@ describe('LoadingSkeleton', () => {
     render(<LoadingSkeleton />);
 
     const skeletonElements = screen.getAllByTestId('skeleton-item');
-    
+
     skeletonElements.forEach(element => {
       expect(element).toHaveClass('rounded-lg');
     });
@@ -169,7 +190,7 @@ describe('LoadingSkeleton', () => {
     render(<LoadingSkeleton />);
 
     const skeletonElements = screen.getAllByTestId('skeleton-item');
-    
+
     skeletonElements.forEach(element => {
       expect(element).toHaveClass('h-16');
     });
@@ -184,10 +205,10 @@ describe('LoadingSkeleton', () => {
 
   it('should handle edge case count values', () => {
     const edgeCases = [0, 1, 999, -1, -999];
-    
+
     edgeCases.forEach(count => {
       const { unmount } = render(<LoadingSkeleton count={count} />);
-      
+
       if (count > 0) {
         const skeletonElements = screen.getAllByTestId('skeleton-item');
         expect(skeletonElements).toHaveLength(Math.max(0, count));
@@ -195,7 +216,7 @@ describe('LoadingSkeleton', () => {
         const skeletonElements = screen.queryAllByTestId('skeleton-item');
         expect(skeletonElements).toHaveLength(0);
       }
-      
+
       unmount();
     });
   });
@@ -205,7 +226,7 @@ describe('LoadingSkeleton', () => {
 
     const container = screen.getByTestId('skeleton-container');
     const skeletonElements = screen.getAllByTestId('skeleton-item');
-    
+
     expect(container).toContainElement(skeletonElements[0]);
     expect(container).toContainElement(skeletonElements[1]);
     expect(container).toContainElement(skeletonElements[2]);
@@ -213,12 +234,12 @@ describe('LoadingSkeleton', () => {
 
   it('should handle rapid re-renders gracefully', () => {
     const { rerender } = render(<LoadingSkeleton count={2} />);
-    
+
     expect(screen.getAllByTestId('skeleton-item')).toHaveLength(2);
-    
+
     rerender(<LoadingSkeleton count={5} />);
     expect(screen.getAllByTestId('skeleton-item')).toHaveLength(5);
-    
+
     rerender(<LoadingSkeleton count={1} />);
     expect(screen.getAllByTestId('skeleton-item')).toHaveLength(1);
   });
@@ -235,7 +256,7 @@ describe('LoadingSkeleton', () => {
 
     const skeletonElements = screen.getAllByTestId('skeleton-item');
     expect(skeletonElements).toHaveLength(3);
-    
+
     // Verify they are in the correct order in the DOM
     const container = screen.getByTestId('skeleton-container');
     expect(container.children[0]).toBe(skeletonElements[0]);

@@ -1,4 +1,3 @@
-import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
@@ -13,13 +12,15 @@ jest.mock('@dnd-kit/core', () => ({
 }));
 
 // Mock the TodoItem component
-jest.mock('@/components/TodoItem', () => ({
-  default: ({ todo }: { todo: any }) => (
-    <div data-testid={`todo-item-${todo.id}`}>
-      {todo.todo}
-    </div>
-  ),
-}));
+jest.mock('@/components/TodoItem', () => {
+  const MockedTodoItem = ({
+    todo,
+  }: {
+    todo: { id: number; todo: string; completed: boolean; userId: number };
+  }) => <div data-testid={`todo-item-${todo.id}`}>{todo.todo}</div>;
+  MockedTodoItem.displayName = 'MockedTodoItem';
+  return { default: MockedTodoItem };
+});
 
 const createWrapper = () => {
   const queryClient = new QueryClient({
@@ -30,9 +31,7 @@ const createWrapper = () => {
   });
 
   return ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 };
 
@@ -78,7 +77,7 @@ describe('DragOverlay', () => {
     // Test that the component supports various todo states
     const completedTodo = { ...mockTodo, completed: true };
     const differentTodo = { ...mockTodo, id: 2, todo: 'Another todo' };
-    
+
     expect(completedTodo.completed).toBe(true);
     expect(differentTodo.id).toBe(2);
     expect(differentTodo.todo).toBe('Another todo');
@@ -87,7 +86,7 @@ describe('DragOverlay', () => {
   it('should apply proper visual styling classes', () => {
     // Test that the component has the right visual styling
     const expectedClasses = ['opacity-80', 'shadow-2xl', 'rounded-lg'];
-    
+
     // Verify the styling classes are defined
     expect(expectedClasses).toContain('opacity-80');
     expect(expectedClasses).toContain('shadow-2xl');
@@ -98,7 +97,7 @@ describe('DragOverlay', () => {
     // Test that the component handles transform data
     const { useDraggable } = require('@dnd-kit/core');
     const mockTransform = { x: 10, y: 20, scaleX: 1, scaleY: 1 };
-    
+
     expect(mockTransform.x).toBe(10);
     expect(mockTransform.y).toBe(20);
     expect(mockTransform.scaleX).toBe(1);

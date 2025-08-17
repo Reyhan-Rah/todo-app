@@ -1,6 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useCreateTodo } from '@/hooks/useTodos';
 import CreateTodoForm from './index';
 
 // Mock the useCreateTodo hook
@@ -17,14 +18,12 @@ const createWrapper = () => {
   });
 
   return ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 };
 
 describe('CreateTodoForm', () => {
-  const mockUseCreateTodo = jest.mocked(require('@/hooks/useTodos').useCreateTodo);
+  const mockUseCreateTodo = jest.mocked(useCreateTodo);
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -39,9 +38,16 @@ describe('CreateTodoForm', () => {
   it('should render form elements correctly', () => {
     render(<CreateTodoForm />, { wrapper: createWrapper() });
 
-    expect(screen.getByPlaceholderText('Add a new todo...')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Add Todo' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Add Todo' })).toHaveAttribute('type', 'submit');
+    expect(
+      screen.getByPlaceholderText('Add a new todo...')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Add Todo' })
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Add Todo' })).toHaveAttribute(
+      'type',
+      'submit'
+    );
   });
 
   it('should handle input changes', () => {
@@ -70,15 +76,17 @@ describe('CreateTodoForm', () => {
   it('should show validation error for empty submission', async () => {
     render(<CreateTodoForm />, { wrapper: createWrapper() });
 
-    const form = screen.getByRole('button', { name: 'Add Todo' }).closest('form')!;
+    const form = screen
+      .getByRole('button', { name: 'Add Todo' })
+      .closest('form')!;
     const submitButton = screen.getByRole('button', { name: 'Add Todo' });
-    
+
     // Button should be disabled initially (empty input)
     expect(submitButton).toBeDisabled();
-    
+
     // Submit form - button should remain disabled
     fireEvent.submit(form);
-    
+
     await waitFor(() => {
       expect(submitButton).toBeDisabled();
     });
@@ -88,19 +96,21 @@ describe('CreateTodoForm', () => {
     render(<CreateTodoForm />, { wrapper: createWrapper() });
 
     const input = screen.getByPlaceholderText('Add a new todo...');
-    const form = screen.getByRole('button', { name: 'Add Todo' }).closest('form')!;
+    const form = screen
+      .getByRole('button', { name: 'Add Todo' })
+      .closest('form')!;
     const submitButton = screen.getByRole('button', { name: 'Add Todo' });
 
     // Button should be disabled initially
     expect(submitButton).toBeDisabled();
-    
+
     // Add whitespace - button should remain disabled
     fireEvent.change(input, { target: { value: '   ' } });
     expect(submitButton).toBeDisabled();
-    
+
     // Submit form - button should remain disabled
     fireEvent.submit(form);
-    
+
     await waitFor(() => {
       expect(submitButton).toBeDisabled();
     });
@@ -118,7 +128,9 @@ describe('CreateTodoForm', () => {
     render(<CreateTodoForm />, { wrapper: createWrapper() });
 
     const input = screen.getByPlaceholderText('Add a new todo...');
-    const form = screen.getByRole('button', { name: 'Add Todo' }).closest('form')!;
+    const form = screen
+      .getByRole('button', { name: 'Add Todo' })
+      .closest('form')!;
 
     fireEvent.change(input, { target: { value: 'New todo item' } });
     fireEvent.submit(form);
@@ -144,12 +156,14 @@ describe('CreateTodoForm', () => {
       mutate: mockMutate,
       isPending: false,
       isError: false,
-    });
+    } as any);
 
     render(<CreateTodoForm />, { wrapper: createWrapper() });
 
     const input = screen.getByPlaceholderText('Add a new todo...');
-    const form = screen.getByRole('button', { name: 'Add Todo' }).closest('form')!;
+    const form = screen
+      .getByRole('button', { name: 'Add Todo' })
+      .closest('form')!;
     const submitButton = screen.getByRole('button', { name: 'Add Todo' });
 
     // Add valid text
@@ -194,7 +208,9 @@ describe('CreateTodoForm', () => {
     render(<CreateTodoForm />, { wrapper: createWrapper() });
 
     const input = screen.getByPlaceholderText('Add a new todo...');
-    const form = screen.getByRole('button', { name: 'Add Todo' }).closest('form')!;
+    const form = screen
+      .getByRole('button', { name: 'Add Todo' })
+      .closest('form')!;
 
     fireEvent.change(input, { target: { value: 'New todo' } });
     fireEvent.submit(form);
@@ -214,12 +230,14 @@ describe('CreateTodoForm', () => {
     render(<CreateTodoForm />, { wrapper: createWrapper() });
 
     const input = screen.getByPlaceholderText('Add a new todo...');
-    const form = screen.getByRole('button', { name: 'Add Todo' }).closest('form')!;
+    const form = screen
+      .getByRole('button', { name: 'Add Todo' })
+      .closest('form')!;
     const submitButton = screen.getByRole('button', { name: 'Add Todo' });
 
     // Create validation error
     fireEvent.submit(form);
-    
+
     await waitFor(() => {
       expect(submitButton).toBeDisabled();
     });
@@ -265,7 +283,9 @@ describe('CreateTodoForm', () => {
     render(<CreateTodoForm />, { wrapper: createWrapper() });
 
     const input = screen.getByPlaceholderText('Add a new todo...');
-    const form = screen.getByRole('button', { name: 'Add Todo' }).closest('form')!;
+    const form = screen
+      .getByRole('button', { name: 'Add Todo' })
+      .closest('form')!;
 
     fireEvent.submit(form);
 
@@ -288,7 +308,7 @@ describe('CreateTodoForm', () => {
     render(<CreateTodoForm />, { wrapper: createWrapper() });
 
     const input = screen.getByPlaceholderText('Add a new todo...');
-    
+
     fireEvent.change(input, { target: { value: 'New todo' } });
     fireEvent.submit(input.closest('form')!);
 
@@ -303,11 +323,13 @@ describe('CreateTodoForm', () => {
       mutate: mockMutate,
       isPending: false,
       isError: false,
-    });
+    } as any);
 
     render(<CreateTodoForm />, { wrapper: createWrapper() });
 
-    const form = screen.getByRole('button', { name: 'Add Todo' }).closest('form')!;
+    const form = screen
+      .getByRole('button', { name: 'Add Todo' })
+      .closest('form')!;
     const submitButton = screen.getByRole('button', { name: 'Add Todo' });
 
     // Button should be disabled initially
