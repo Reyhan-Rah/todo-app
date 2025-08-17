@@ -1,7 +1,6 @@
 'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import TodoList from '@/components/TodoList';
 import ToastContainer from '@/components/ToastContainer';
 import { useToast } from '@/hooks/useToast';
@@ -35,7 +34,6 @@ export default function Home() {
   return (
     <QueryClientProvider client={queryClient}>
       <HomeContent />
-      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 }
