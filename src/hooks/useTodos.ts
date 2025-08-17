@@ -119,12 +119,8 @@ export const useDeleteTodo = () => {
       toastContext?.showSuccess('Todo deleted successfully!');
     },
     onError: (error, id) => {
-      // A replacement for API call as it is not working
-      if (
-        error instanceof Error &&
-        error instanceof AxiosError &&
-        error.status === 404
-      ) {
+      // Handle 404 errors by updating the cache optimistically
+      if (error instanceof AxiosError && error.response?.status === 404) {
         queryClient.setQueryData(
           todoKeys.lists(),
           (old: Todo[] | undefined) => {
@@ -161,19 +157,15 @@ export const useToggleTodo = () => {
       toastContext?.showSuccess(`Todo marked as ${status}!`);
     },
     onError: (error, variables) => {
-      // if the error is a 404, we need to update the todo in the list cache
-      if (
-        error instanceof Error &&
-        error instanceof AxiosError &&
-        error.status === 404
-      ) {
+      // Handle 404 errors by updating the todo in the list cache optimistically
+      if (error instanceof AxiosError && error.response?.status === 404) {
         // Get the id from the mutation variables
         const { id } = variables;
         queryClient.setQueryData(
           todoKeys.lists(),
           (old: Todo[] | undefined) => {
             return old?.map(todo =>
-              todo.id == id ? { ...todo, completed: !todo.completed } : todo
+              todo.id === id ? { ...todo, completed: !todo.completed } : todo
             );
           }
         );

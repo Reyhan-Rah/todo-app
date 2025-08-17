@@ -102,20 +102,46 @@ export class ApiError extends Error {
   }
 }
 
+// Type definitions for axios errors
+interface AxiosErrorResponse {
+  data?: { message?: string; code?: string };
+  status: number;
+}
+
+interface AxiosErrorWithResponse {
+  response?: AxiosErrorResponse;
+}
+
+interface AxiosErrorWithRequest {
+  request?: unknown;
+}
+
+// Type guard for axios errors with response
+const isAxiosErrorWithResponse = (
+  error: unknown
+): error is AxiosErrorWithResponse => {
+  return error !== null && typeof error === 'object' && 'response' in error;
+};
+
+// Type guard for axios errors with request
+const isAxiosErrorWithRequest = (
+  error: unknown
+): error is AxiosErrorWithRequest => {
+  return error !== null && typeof error === 'object' && 'request' in error;
+};
+
 // API error handler
 export const handleApiError = (error: unknown): never => {
-  // Type guard for axios errors
-  if (error && typeof error === 'object' && 'response' in error) {
-    const axiosError = error as {
-      response?: { data?: { message?: string; code?: string }; status: number };
-    };
+  // Type guard for axios errors with response
+  if (isAxiosErrorWithResponse(error)) {
+    const axiosError = error as AxiosErrorWithResponse;
     // Server responded with error status
     throw new ApiError(
       axiosError.response?.data?.message || 'An error occurred',
       axiosError.response?.status || 0,
       axiosError.response?.data?.code
     );
-  } else if (error && typeof error === 'object' && 'request' in error) {
+  } else if (isAxiosErrorWithRequest(error)) {
     // Request was made but no response received
     throw new ApiError('Network error - no response received', 0);
   } else {

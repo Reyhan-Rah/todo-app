@@ -54,7 +54,10 @@ describe('Todo API Integration', () => {
         },
       ];
 
-      (todoApi.getAll as jest.Mock).mockResolvedValue(mockTodos);
+      const mockGetAll = todoApi.getAll as jest.MockedFunction<
+        typeof todoApi.getAll
+      >;
+      mockGetAll.mockResolvedValue(mockTodos);
 
       const { result } = renderHook(() => useTodos(), {
         wrapper: createWrapper(),
@@ -65,12 +68,15 @@ describe('Todo API Integration', () => {
       });
 
       expect(result.current.data).toEqual(mockTodos);
-      expect(todoApi.getAll).toHaveBeenCalledTimes(1);
+      expect(mockGetAll).toHaveBeenCalledTimes(1);
     });
 
     it('should handle error when fetching todos fails', async () => {
       const error = new Error('Failed to fetch todos');
-      (todoApi.getAll as jest.Mock).mockRejectedValue(error);
+      const mockGetAll = todoApi.getAll as jest.MockedFunction<
+        typeof todoApi.getAll
+      >;
+      mockGetAll.mockRejectedValue(error);
 
       const { result } = renderHook(() => useTodos(), {
         wrapper: createWrapper(),
@@ -80,7 +86,7 @@ describe('Todo API Integration', () => {
         expect(result.current.isError).toBe(true);
       });
 
-      expect(result.current.error).toBe(error);
+      expect(result.current.error).toEqual(error);
     });
   });
 
@@ -93,7 +99,10 @@ describe('Todo API Integration', () => {
         userId: 1,
       };
 
-      (todoApi.create as jest.Mock).mockResolvedValue(newTodo);
+      const mockCreate = todoApi.create as jest.MockedFunction<
+        typeof todoApi.create
+      >;
+      mockCreate.mockResolvedValue(newTodo);
 
       const { result } = renderHook(() => useCreateTodo(), {
         wrapper: createWrapper(),
@@ -107,12 +116,15 @@ describe('Todo API Integration', () => {
       });
 
       expect(result.current.data).toEqual(newTodo);
-      expect(todoApi.create).toHaveBeenCalledWith(createData);
+      expect(mockCreate).toHaveBeenCalledWith(createData);
     });
 
     it('should handle error when creating todo fails', async () => {
       const error = new Error('Failed to create todo');
-      (todoApi.create as jest.Mock).mockRejectedValue(error);
+      const mockCreate = todoApi.create as jest.MockedFunction<
+        typeof todoApi.create
+      >;
+      mockCreate.mockRejectedValue(error);
 
       const { result } = renderHook(() => useCreateTodo(), {
         wrapper: createWrapper(),
@@ -125,7 +137,7 @@ describe('Todo API Integration', () => {
         expect(result.current.isError).toBe(true);
       });
 
-      expect(result.current.error).toBe(error);
+      expect(result.current.error).toEqual(error);
     });
   });
 });

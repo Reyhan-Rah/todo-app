@@ -25,7 +25,7 @@ apiClient.interceptors.request.use(
     }
     return config;
   },
-  error => {
+  (error: Error) => {
     return Promise.reject(error);
   }
 );
@@ -35,18 +35,23 @@ apiClient.interceptors.response.use(
   (response: AxiosResponse) => {
     return response;
   },
-  error => {
+  (error: Error) => {
     // Handle common error scenarios
-    if (error.response?.status === 401) {
-      // Handle unauthorized access
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('authToken');
-        window.location.href = '/login';
+    if (error && typeof error === 'object' && 'response' in error) {
+      const axiosError = error as {
+        response?: { status?: number; data?: unknown };
+      };
+      if (axiosError.response?.status === 401) {
+        // Handle unauthorized access
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('authToken');
+          window.location.href = '/login';
+        }
       }
-    }
 
-    if (error.response?.status === 500) {
-      console.error('Server error:', error.response.data);
+      if (axiosError.response?.status === 500) {
+        console.error('Server error:', axiosError.response.data);
+      }
     }
 
     return Promise.reject(error);
@@ -61,18 +66,18 @@ export const apiService = {
   },
 
   // POST request
-  post: <T>(
+  post: <T, D = Record<string, unknown>>(
     url: string,
-    data?: unknown,
+    data?: D,
     config?: AxiosRequestConfig
   ): Promise<T> => {
     return apiClient.post(url, data, config).then(response => response.data);
   },
 
   // PUT request
-  put: <T>(
+  put: <T, D = Record<string, unknown>>(
     url: string,
-    data?: unknown,
+    data?: D,
     config?: AxiosRequestConfig
   ): Promise<T> => {
     return apiClient.put(url, data, config).then(response => response.data);
@@ -84,9 +89,9 @@ export const apiService = {
   },
 
   // PATCH request
-  patch: <T>(
+  patch: <T, D = Record<string, unknown>>(
     url: string,
-    data?: unknown,
+    data?: D,
     config?: AxiosRequestConfig
   ): Promise<T> => {
     return apiClient.patch(url, data, config).then(response => response.data);
